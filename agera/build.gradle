@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 apply plugin: 'com.android.library'
-
-
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.1"
@@ -25,3 +23,7 @@ android {
 
 }
 
+dependencies {
+    compile files('libs/android-support-v4.jar')
+    compile files('libs/gson-2.8.1.jar')
+}

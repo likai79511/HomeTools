@@ -1,7 +1,5 @@
 package com.agera.hometools.core;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -13,31 +11,30 @@ import java.util.concurrent.Semaphore;
 
 public class TaskDriver {
 
-    private static final ExecutorService mCore = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() + 1);
+    private final int cpuCount = Runtime.getRuntime().availableProcessors();
 
-    public static Semaphore maxCurrentCount = new Semaphore(8);
+    private final ExecutorService mCore = Executors.newFixedThreadPool(cpuCount + 1);
+
+    public final Semaphore mControl = new Semaphore(8);
+
+    private static TaskDriver driver = null;
 
     private TaskDriver() {
     }
-
-    private static TaskDriver driver = null;
 
 
     public static TaskDriver instance() {
         synchronized (TaskDriver.class) {
             if (driver == null)
                 driver = new TaskDriver();
-            return driver;
         }
+        return driver;
     }
 
-    public <T> T execute(FutureTask<T> task) {
-        mCore.submit(new Callable<Object>() {
-            @Override
-            public Object call() throws Exception {
-                return null;
-            }
-        });
+
+    public void execute(FutureTask task) {
+        mCore.submit(task);
     }
+
 
 }
