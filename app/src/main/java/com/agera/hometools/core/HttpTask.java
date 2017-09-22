@@ -1,11 +1,10 @@
 package com.agera.hometools.core;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
+import com.agera.hometools.network.Callback;
 import com.google.android.agera.Receiver;
 import com.google.android.agera.Result;
-import com.google.android.agera.net.HttpRequest;
 import com.google.android.agera.net.HttpResponse;
 
 import java.util.concurrent.Callable;
@@ -20,18 +19,27 @@ public class HttpTask extends FutureTask<Result<HttpResponse>> {
 
     private boolean isLocked = false;
 
-    private Exception error = null;
+    private Throwable error = null;
 
-    private HttpRequest request = null;
+    private Callback cb = null;
 
-    public HttpTask(@NonNull Callable<Result<HttpResponse>> callable) {
+    private HttpTask(@NonNull Callable<Result<HttpResponse>> callable) {
         super(callable);
     }
 
-    public HttpTask(@NonNull Runnable runnable, Result<HttpResponse> result) {
+    private HttpTask(@NonNull Runnable runnable, Result<HttpResponse> result) {
         super(runnable, result);
     }
 
+    private HttpTask setCallback(Callback callback) {
+        this.cb = callback;
+        return this;
+    }
+
+
+    public static HttpTask createHttpTask(@NonNull Callable<Result<HttpResponse>> callable, Callback callback) {
+        return new HttpTask(callable).setCallback(callback);
+    }
 
     @Override
     protected void done() {
@@ -44,19 +52,18 @@ public class HttpTask extends FutureTask<Result<HttpResponse>> {
                     .ifFailedSendTo(new Receiver<Throwable>() {
                         @Override
                         public void accept(@NonNull Throwable value) {
-                            Log.e("---", "--error-01:" + value.getMessage());
+                            cb.error(value);
                         }
                     })
                     .ifSucceededSendTo(new Receiver<HttpResponse>() {
                         @Override
                         public void accept(@NonNull HttpResponse value) {
-                            Log.e("---", "--result:" + value.getResponseMessage());
+                            cb.call(value);
                         }
                     });
         } catch (Exception e) {
-            Log.e("---", "--error-02:" + e.getMessage());
+            cb.error(e);
         }
-
     }
 
     @Override
