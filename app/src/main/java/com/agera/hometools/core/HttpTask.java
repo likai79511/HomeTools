@@ -58,7 +58,11 @@ public class HttpTask extends FutureTask<Result<HttpResponse>> {
                     .ifSucceededSendTo(new Receiver<HttpResponse>() {
                         @Override
                         public void accept(@NonNull HttpResponse value) {
-                            cb.call(value);
+                            if (value.getResponseCode()>=200 && value.getResponseCode()<=300){
+                                cb.success(value);
+                            }else{
+                                cb.error(new Exception(value.getResponseMessage()));
+                            }
                         }
                     });
         } catch (Exception e) {

@@ -18,17 +18,5 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
     }
 
-    public void test(View view){
-    TaskDriver.instance().execute(Restful.register("wahaha001", "1234567", new Callback() {
-        @Override
-        public void call(HttpResponse result) {
-            Log.e("---","--result:"+result.getResponseMessage());
-        }
 
-        @Override
-        public void error(Throwable e) {
-            Log.e("---","--error:"+e.getMessage());
-        }
-    }));
-    }
 }
