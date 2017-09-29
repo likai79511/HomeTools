@@ -8,7 +8,7 @@ import com.google.android.agera.Function;
 import com.google.android.agera.Result;
 
 /**
- * Created by 43992639 on 2017/9/29.
+ * Created by  Agera K  on 2017/9/29.
  */
 public interface LoginFunctionInter {
     /**

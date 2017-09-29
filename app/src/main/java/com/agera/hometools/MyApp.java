@@ -3,7 +3,7 @@ package com.agera.hometools;
 import android.app.Application;
 
 /**
- * Created by 43992639 on 2017/9/29.
+ * Created by  Agera K  on 2017/9/29.
  */
 public class MyApp extends Application {
 
