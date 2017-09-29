@@ -1,6 +1,7 @@
 package com.agera.hometools.core;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.agera.hometools.network.Callback;
 import com.google.android.agera.Receiver;
@@ -25,6 +26,7 @@ public class HttpTask extends FutureTask<Result<HttpResponse>> {
 
     private HttpTask(@NonNull Callable<Result<HttpResponse>> callable) {
         super(callable);
+        Log.e("---","--new:"+Thread.currentThread().getId());
     }
 
     private HttpTask(@NonNull Runnable runnable, Result<HttpResponse> result) {
@@ -43,6 +45,7 @@ public class HttpTask extends FutureTask<Result<HttpResponse>> {
 
     @Override
     protected void done() {
+        Log.e("---","--done:"+Thread.currentThread().getId());
         if (isLocked) {
             TaskDriver.instance().mControl.release();
             isLocked = false;
@@ -73,6 +76,7 @@ public class HttpTask extends FutureTask<Result<HttpResponse>> {
     @Override
     public void run() {
         try {
+            Log.e("---","--run:"+Thread.currentThread().getId());
             TaskDriver.instance().mControl.acquire();
             isLocked = true;
             if (!Thread.interrupted()) {

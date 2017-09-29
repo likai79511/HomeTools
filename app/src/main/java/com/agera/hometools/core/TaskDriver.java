@@ -36,5 +36,9 @@ public class TaskDriver {
         mCore.submit(task);
     }
 
+    public ExecutorService getThreadPool() {
+        return mCore;
+    }
+
 
 }
