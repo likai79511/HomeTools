@@ -24,6 +24,7 @@ android {
 }
 
 dependencies {
-    compile files('libs/android-support-v4.jar')
+    compile 'com.android.support:design:25.0.1'
+    compile 'com.android.support:support-v4:25.0.1'
     compile files('libs/gson-2.8.1.jar')
 }

@@ -1,8 +1,10 @@
 package com.agera.hometools.login;
 
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Pair;
+import android.view.View;
 import android.widget.Toast;
 
 import com.agera.hometools.MyApp;
@@ -89,28 +91,35 @@ public class LoginFunctionsImp implements LoginFunctionInter {
      * Error handle
      */
     @Override
-    public Function<Throwable, Object> handleError() {
+    public Function<Throwable, Object> handleError(final View view) {
         WeakReference<Function<Throwable, Object>> weakReference = new WeakReference<Function<Throwable, Object>>(new Function<Throwable, Object>() {
             @NonNull
             @Override
             public Object apply(@NonNull Throwable input) {
-                Toast.makeText(MyApp.getInstance(), input.getMessage(), Toast.LENGTH_SHORT).show();
+                if (view==null) {
+                    Toast.makeText(MyApp.getInstance(), input.getMessage(), Toast.LENGTH_SHORT).show();
+                }else {
+                    Snackbar.make(view,input.getMessage(),Snackbar.LENGTH_SHORT).show();
+                }
                 return null;
             }
         });
         return weakReference.get();
     }
 
+
     @Override
-    public Function<Pair<String, String>, Result<String>> register(final Callback callback) {
-        WeakReference<Function<Pair<String, String>, Result<String>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<String>>>(new Function<Pair<String, String>, Result<String>>() {
+    public Function<Pair<String, String>, Result<String>> register(final Callback cb) {
+        final WeakReference<Function<Pair<String, String>, Result<String>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<String>>>(new Function<Pair<String, String>, Result<String>>() {
             @NonNull
             @Override
             public Result<String> apply(@NonNull Pair<String, String> input) {
                 try {
-                    TaskDriver.instance().execute(Restful.register(input.first, input.second, callback));
+                    TaskDriver.instance().execute(Restful.register(input.first, input.second,cb));
                     return Result.success("");
                 } catch (Exception e) {
+                    if (cb!=null)
+                        cb.error(e);
                     return Result.failure(e);
                 }
             }

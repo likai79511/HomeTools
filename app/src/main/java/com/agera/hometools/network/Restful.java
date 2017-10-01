@@ -25,7 +25,7 @@ public class Restful {
     private static Gson gson = new Gson();
 
     //regist
-    public static HttpTask register(String name, String password, Callback callback) {
+    public static HttpTask register(String name, String password,Callback cb) {
         return HttpTask.createHttpTask(new HttpCallable(HttpRequests.httpPostRequest(register_url)
                 .body(gson.toJson(new AppendMap().put("name", name).put("password", password).compile()).getBytes())
                 .headerField(applicationIdDesc, applicationId)
@@ -33,6 +33,6 @@ public class Restful {
                 .headerField(content_type, format_jason)
                 .connectTimeoutMs(timeout)
                 .readTimeoutMs(timeout)
-                .compile()), callback);
+                .compile()),cb);
     }
 }

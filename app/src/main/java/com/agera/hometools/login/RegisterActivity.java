@@ -16,9 +16,10 @@ import com.google.android.agera.Function;
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
 import com.google.android.agera.Supplier;
+import com.google.android.agera.Updatable;
 import com.google.android.agera.net.HttpResponse;
 
-public class RegisterActivity extends Activity {
+public class RegisterActivity extends Activity implements Updatable{
 
     private EditText mEt_tel = null;
     private EditText mEt_password = null;
@@ -48,12 +49,13 @@ public class RegisterActivity extends Activity {
                     @NonNull
                     @Override
                     public String get() {
+                        Log.e("---","--getFrom-");
                         tel = mEt_tel == null ? null : mEt_tel.getText() == null ? null : mEt_tel.getText().toString().trim();
                         return tel;
                     }
                 })
                 .attemptTransform(LoginFunctionsImp.instance().checkTel())      //telephone number
-                .orEnd(LoginFunctionsImp.instance().handleError())              //handle number error
+                .orEnd(LoginFunctionsImp.instance().handleError(mEt_tel))              //handle number error
                 .getFrom(new Supplier<String>() {                            //get password
                     @NonNull
                     @Override
@@ -63,7 +65,7 @@ public class RegisterActivity extends Activity {
                     }
                 })
                 .attemptTransform(LoginFunctionsImp.instance().checkPassword())    //check password
-                .orEnd(LoginFunctionsImp.instance().handleError())                 //hanlde password  error
+                .orEnd(LoginFunctionsImp.instance().handleError(mEt_password))                 //hanlde password  error
                 .getFrom(new Supplier<String>() {                               //get confirm password
                     @NonNull
                     @Override
@@ -73,7 +75,7 @@ public class RegisterActivity extends Activity {
                     }
                 })
                 .attemptTransform(LoginFunctionsImp.instance().checkConfirmPassword(password))
-                .orEnd(LoginFunctionsImp.instance().handleError())
+                .orEnd(LoginFunctionsImp.instance().handleError(mEt_confirm_password))
                 .transform(new Function<String, Pair<String, String>>() {
                     @NonNull
                     @Override
@@ -81,25 +83,32 @@ public class RegisterActivity extends Activity {
                         return Pair.create(tel, password);
                     }
                 })
-                .thenAttemptTransform(LoginFunctionsImp.instance().register(new Callback() {
-                    @Override
-                    public void success(HttpResponse result) {
-                        Log.e("---", "---success:" + Thread.currentThread().getId() + "\n" + result.getResponseMessage());
-                    }
-
-                    @Override
-                    public void error(Throwable e) {
-                        super.error(new Exception("register failed:"+Thread.currentThread().getId() + "\n" + e.getMessage()));
-                    }
-                }))
-                .orEnd(LoginFunctionsImp.instance().handleError())
+                .thenTransform(LoginFunctionsImp.instance().register(null))
                 .compile();
+        if (mRep==null){
+            Log.e("---","---mRep==null");
+        }
+        if (this==null){
+            Log.e("---","---this==null");
+        }
+        mRep.addUpdatable(this);
     }
 
     private void initViews() {
         mEt_tel = (EditText) findViewById(R.id.et_tel);
         mEt_password = (EditText) findViewById(R.id.et_password);
         mEt_confirm_password = (EditText) findViewById(R.id.et_confirm_password);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mRep.removeUpdatable(this);
+    }
+
+    @Override
+    public void update() {
+        Log.e("---","---update");
     }
 
     class OnClickListenerObservable extends BaseObservable implements Button.OnClickListener {

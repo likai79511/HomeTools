@@ -22,61 +22,60 @@ public class HttpTask extends FutureTask<Result<HttpResponse>> {
 
     private Throwable error = null;
 
-    private Callback cb = null;
+    private Callback callable = null;
 
     private HttpTask(@NonNull Callable<Result<HttpResponse>> callable) {
         super(callable);
-        Log.e("---","--new:"+Thread.currentThread().getId());
+        Log.e("---", "--new:" + Thread.currentThread().getId());
     }
 
-    private HttpTask(@NonNull Runnable runnable, Result<HttpResponse> result) {
-        super(runnable, result);
+    private HttpTask(@NonNull Callable<Result<HttpResponse>> callable, Callback cb) {
+        super(callable);
+        this.callable = cb;
+        Log.e("---", "--new:" + Thread.currentThread().getId());
     }
 
-    private HttpTask setCallback(Callback callback) {
-        this.cb = callback;
-        return this;
-    }
-
-
-    public static HttpTask createHttpTask(@NonNull Callable<Result<HttpResponse>> callable, Callback callback) {
-        return new HttpTask(callable).setCallback(callback);
+    public static HttpTask createHttpTask(@NonNull Callable<Result<HttpResponse>> callable,Callback callback) {
+        return new HttpTask(callable,callback);
     }
 
     @Override
     protected void done() {
-        Log.e("---","--done:"+Thread.currentThread().getId());
+        Log.e("---", "--done:" + Thread.currentThread().getId());
+        if (callable != null) {
+            try {
+                get()
+                        .ifFailedSendTo(new Receiver<Throwable>() {
+                            @Override
+                            public void accept(@NonNull Throwable value) {
+                                callable.error(value);
+                            }
+                        })
+                        .ifSucceededSendTo(new Receiver<HttpResponse>() {
+                            @Override
+                            public void accept(@NonNull HttpResponse value) {
+                                if (value.getResponseCode() <= 300 && value.getResponseCode() >= 200) {
+                                    callable.success(value);
+                                } else {
+                                    callable.error(new Exception("the request is failed, responseCode:" + value.getResponseCode()));
+                                }
+                            }
+                        });
+            } catch (Exception e) {
+                callable.error(e);
+            }
+        }
+
         if (isLocked) {
             TaskDriver.instance().mControl.release();
             isLocked = false;
-        }
-        try {
-            get()
-                    .ifFailedSendTo(new Receiver<Throwable>() {
-                        @Override
-                        public void accept(@NonNull Throwable value) {
-                            cb.error(value);
-                        }
-                    })
-                    .ifSucceededSendTo(new Receiver<HttpResponse>() {
-                        @Override
-                        public void accept(@NonNull HttpResponse value) {
-                            if (value.getResponseCode()>=200 && value.getResponseCode()<=300){
-                                cb.success(value);
-                            }else{
-                                cb.error(new Exception(value.getResponseMessage()));
-                            }
-                        }
-                    });
-        } catch (Exception e) {
-            cb.error(e);
         }
     }
 
     @Override
     public void run() {
         try {
-            Log.e("---","--run:"+Thread.currentThread().getId());
+            Log.e("---", "--run:" + Thread.currentThread().getId());
             TaskDriver.instance().mControl.acquire();
             isLocked = true;
             if (!Thread.interrupted()) {
