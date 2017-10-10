@@ -1,8 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="#efefef">
 
+    <ViewStub
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
 
+    <Button
+        android:id="@+id/btn_locate"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:text="Locate" />
 
+    <Button
+        android:id="@+id/btn_search_way"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:text="Find way" />
+
+    <Button
+        android:id="@+id/btn_family"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:text="Family" />
+
+    <Button
+        android:id="@+id/btn_kd"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:text="Find something" />
+
+    <Button
+        android:id="@+id/btn_setting"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:text="Setting" />
+
+    <ViewStub
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
 </LinearLayout>

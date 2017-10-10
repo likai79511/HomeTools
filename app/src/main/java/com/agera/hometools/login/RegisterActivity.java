@@ -10,17 +10,17 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.agera.hometools.R;
-import com.agera.hometools.network.Callback;
 import com.google.android.agera.BaseObservable;
 import com.google.android.agera.Function;
+import com.google.android.agera.Merger;
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
+import com.google.android.agera.Result;
 import com.google.android.agera.Supplier;
 import com.google.android.agera.Updatable;
-import com.google.android.agera.net.HttpResponse;
 
-public class RegisterActivity extends Activity implements Updatable{
-
+public class RegisterActivity extends Activity implements Updatable {
+    private boolean flag = false;
     private EditText mEt_tel = null;
     private EditText mEt_password = null;
     private EditText mEt_confirm_password = null;
@@ -49,17 +49,19 @@ public class RegisterActivity extends Activity implements Updatable{
                     @NonNull
                     @Override
                     public String get() {
-                        Log.e("---","--getFrom-");
                         tel = mEt_tel == null ? null : mEt_tel.getText() == null ? null : mEt_tel.getText().toString().trim();
+                        Log.e("---", "--getFrom-001 -" + Thread.currentThread().getId() + "--tel:" + tel);
                         return tel;
                     }
                 })
                 .attemptTransform(LoginFunctionsImp.instance().checkTel())      //telephone number
                 .orEnd(LoginFunctionsImp.instance().handleError(mEt_tel))              //handle number error
+//                .goTo(TaskDriver.instance().getThreadPool())
                 .getFrom(new Supplier<String>() {                            //get password
                     @NonNull
                     @Override
                     public String get() {
+                        Log.e("---","--getFrom-02"+Thread.currentThread().getId());
                         password = mEt_password == null ? null : mEt_password.getText() == null ? null : mEt_password.getText().toString().trim();
                         return password;
                     }
@@ -70,6 +72,7 @@ public class RegisterActivity extends Activity implements Updatable{
                     @NonNull
                     @Override
                     public String get() {
+                        Log.e("---","--getFrom-03"+Thread.currentThread().getId());
                         confirm_password = mEt_confirm_password == null ? null : mEt_confirm_password.getText() == null ? null : mEt_confirm_password.getText().toString().trim();
                         return confirm_password;
                     }
@@ -84,14 +87,15 @@ public class RegisterActivity extends Activity implements Updatable{
                     }
                 })
                 .thenTransform(LoginFunctionsImp.instance().register(null))
+                .notifyIf(new Merger<Object, Object, Boolean>() {
+                    @NonNull
+                    @Override
+                    public Boolean merge(@NonNull Object o, @NonNull Object o2) {
+                        Log.e("---","---notifyIf:o:"+o+"---o2:"+o2);
+                        return o!=null;
+                    }
+                })
                 .compile();
-        if (mRep==null){
-            Log.e("---","---mRep==null");
-        }
-        if (this==null){
-            Log.e("---","---this==null");
-        }
-        mRep.addUpdatable(this);
     }
 
     private void initViews() {
@@ -103,19 +107,19 @@ public class RegisterActivity extends Activity implements Updatable{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mRep.removeUpdatable(this);
     }
 
     @Override
     public void update() {
-        Log.e("---","---update");
+
+
     }
 
     class OnClickListenerObservable extends BaseObservable implements Button.OnClickListener {
         @Override
         public void onClick(View v) {
-            Log.e("---","---dispatchUpdate");
             dispatchUpdate();
+            mRep.get();
         }
     }
 }

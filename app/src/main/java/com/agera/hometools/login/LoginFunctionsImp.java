@@ -1,10 +1,13 @@
 package com.agera.hometools.login;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.agera.hometools.MyApp;
@@ -49,6 +52,7 @@ public class LoginFunctionsImp implements LoginFunctionInter {
                 return Result.success(input);
             }
         });
+        Log.e("---", "--checkTel-02-"+weakReference.get());
         return weakReference.get();
     }
 
@@ -96,12 +100,13 @@ public class LoginFunctionsImp implements LoginFunctionInter {
             @NonNull
             @Override
             public Object apply(@NonNull Throwable input) {
-                if (view==null) {
+                ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+                if (view == null) {
                     Toast.makeText(MyApp.getInstance(), input.getMessage(), Toast.LENGTH_SHORT).show();
-                }else {
-                    Snackbar.make(view,input.getMessage(),Snackbar.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(view, input.getMessage(), Snackbar.LENGTH_SHORT).show();
                 }
-                return null;
+                return view;
             }
         });
         return weakReference.get();
@@ -115,10 +120,10 @@ public class LoginFunctionsImp implements LoginFunctionInter {
             @Override
             public Result<String> apply(@NonNull Pair<String, String> input) {
                 try {
-                    TaskDriver.instance().execute(Restful.register(input.first, input.second,cb));
+                    TaskDriver.instance().execute(Restful.register(input.first, input.second, cb));
                     return Result.success("");
                 } catch (Exception e) {
-                    if (cb!=null)
+                    if (cb != null)
                         cb.error(e);
                     return Result.failure(e);
                 }
