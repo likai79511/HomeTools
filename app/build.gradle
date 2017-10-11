@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
     defaultConfig {
         applicationId "com.agera.hometools"
         minSdkVersion 14
@@ -15,7 +15,37 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+       /* debug{
+            storeFile file("../key/debug_key.jks")
+            storePassword "123456"
+            keyAlias "hometools"
+            keyPassword "123456"
+        }*/
     }
+
+    signingConfigs {
+        release {
+            //use different file-separator depends you're building on OSX or Windows
+            //storeFile file("/Users/jeffrey/.android/debug.keystore")
+//          storeFile file("C:\\Users\\20710206\\.android\\debug.keystore")
+//          storePassword "android"
+//          keyAlias "androiddebugkey"
+//          keyPassword "android"
+        }
+        debug {
+            //use different file-separator depends you're building on OSX or Windows
+            //storeFile file("/Users/jeffrey/.android/gelmato_uat.keystore")
+//          storeFile file("C:\\Users\\20710206\\.android\\gelmato_uat.keystore")
+//          storePassword "android"
+//          keyAlias "root_ca"
+//          keyPassword "android"
+            storeFile file("../key/debug_key.jks")
+            storePassword "123456"
+            keyAlias "hometools"
+            keyPassword "123456"
+        }
+    }
+
 }
 
 dependencies {
