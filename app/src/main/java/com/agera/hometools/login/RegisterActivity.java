@@ -50,18 +50,15 @@ public class RegisterActivity extends Activity implements Updatable {
                     @Override
                     public String get() {
                         tel = mEt_tel == null ? null : mEt_tel.getText() == null ? null : mEt_tel.getText().toString().trim();
-                        Log.e("---", "--getFrom-001 -" + Thread.currentThread().getId() + "--tel:" + tel);
                         return tel;
                     }
                 })
                 .attemptTransform(LoginFunctionsImp.instance().checkTel())      //telephone number
                 .orEnd(LoginFunctionsImp.instance().handleError(mEt_tel))              //handle number error
-//                .goTo(TaskDriver.instance().getThreadPool())
                 .getFrom(new Supplier<String>() {                            //get password
                     @NonNull
                     @Override
                     public String get() {
-                        Log.e("---","--getFrom-02"+Thread.currentThread().getId());
                         password = mEt_password == null ? null : mEt_password.getText() == null ? null : mEt_password.getText().toString().trim();
                         return password;
                     }
@@ -72,7 +69,6 @@ public class RegisterActivity extends Activity implements Updatable {
                     @NonNull
                     @Override
                     public String get() {
-                        Log.e("---","--getFrom-03"+Thread.currentThread().getId());
                         confirm_password = mEt_confirm_password == null ? null : mEt_confirm_password.getText() == null ? null : mEt_confirm_password.getText().toString().trim();
                         return confirm_password;
                     }
@@ -91,7 +87,6 @@ public class RegisterActivity extends Activity implements Updatable {
                     @NonNull
                     @Override
                     public Boolean merge(@NonNull Object o, @NonNull Object o2) {
-                        Log.e("---","---notifyIf:o:"+o+"---o2:"+o2);
                         return o!=null;
                     }
                 })

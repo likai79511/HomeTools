@@ -31,7 +31,6 @@ public class TaskDriver {
         return driver;
     }
 
-
     public void execute(FutureTask task) {
         mCore.submit(task);
     }
