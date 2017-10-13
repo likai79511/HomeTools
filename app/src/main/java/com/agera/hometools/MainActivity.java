@@ -3,9 +3,12 @@ package com.agera.hometools;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.agera.hometools.locate.LocateActivity;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
@@ -19,6 +22,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         findViewById(R.id.btn_family).setOnClickListener(this);
         findViewById(R.id.btn_kd).setOnClickListener(this);
         findViewById(R.id.btn_setting).setOnClickListener(this);
+
     }
 
 

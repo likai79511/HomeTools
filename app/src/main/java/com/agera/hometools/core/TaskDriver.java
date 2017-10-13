@@ -1,5 +1,9 @@
 package com.agera.hometools.core;
 
+import android.os.Handler;
+import android.os.Looper;
+
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -19,6 +23,14 @@ public class TaskDriver {
 
     private static TaskDriver driver = null;
 
+    private Handler mMain = new Handler(Looper.getMainLooper());
+
+    private  Executor mMainThreadExecutor = new Executor() {
+        @Override
+        public void execute(Runnable command) {
+            mMain.post(command);
+        }
+    };
     private TaskDriver() {
     }
 
@@ -39,5 +51,8 @@ public class TaskDriver {
         return mCore;
     }
 
+    public Executor getMainThreadExecutor(){
+        return mMainThreadExecutor;
+    }
 
 }

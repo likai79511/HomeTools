@@ -11,11 +11,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.agera.hometools.MyApp;
+import com.agera.hometools.core.HttpTask;
 import com.agera.hometools.core.TaskDriver;
 import com.agera.hometools.network.Callback;
 import com.agera.hometools.network.Restful;
 import com.google.android.agera.Function;
 import com.google.android.agera.Result;
+import com.google.android.agera.net.HttpResponse;
 
 import java.lang.ref.WeakReference;
 
@@ -43,16 +45,12 @@ public class LoginFunctionsImp implements LoginFunctionInter {
      */
     @Override
     public Function<String, Result<String>> checkTel() {
-        WeakReference<Function<String, Result<String>>> weakReference = new WeakReference<Function<String, Result<String>>>(new Function<String, Result<String>>() {
-            @NonNull
-            @Override
-            public Result<String> apply(@NonNull String input) {
-                if (TextUtils.isEmpty(input) || input.length() != 11)
-                    return Result.failure(new Exception("telephone lenth is wrong"));
-                return Result.success(input);
-            }
+        Log.e("--","---checkTel--01");
+        WeakReference<Function<String, Result<String>>> weakReference = new WeakReference<Function<String, Result<String>>>(s->{
+            if (TextUtils.isEmpty(s) || s.length() != 11)
+                return Result.failure(new Exception("telephone lenth is wrong"));
+            return Result.success(s);
         });
-        Log.e("---", "--checkTel-02-"+weakReference.get());
         return weakReference.get();
     }
 
@@ -61,14 +59,11 @@ public class LoginFunctionsImp implements LoginFunctionInter {
      */
     @Override
     public Function<String, Result<String>> checkPassword() {
-        WeakReference<Function<String, Result<String>>> weakReference = new WeakReference<Function<String, Result<String>>>(new Function<String, Result<String>>() {
-            @NonNull
-            @Override
-            public Result<String> apply(@NonNull String input) {
-                if (TextUtils.isEmpty(input) || input.length() <= 6)
-                    return Result.failure(new Exception("password length must is 6~11"));
-                return Result.success(input);
-            }
+        Log.e("--","---checkPassword--01");
+        WeakReference<Function<String, Result<String>>> weakReference = new WeakReference<Function<String, Result<String>>>(input->{
+            if (TextUtils.isEmpty(input) || input.length() <= 6)
+                return Result.failure(new Exception("password length must is 6~11"));
+            return Result.success(input);
         });
         return weakReference.get();
     }
@@ -78,14 +73,11 @@ public class LoginFunctionsImp implements LoginFunctionInter {
      */
     @Override
     public Function<String, Result<String>> checkConfirmPassword(final String password) {
-        WeakReference<Function<String, Result<String>>> weakReference = new WeakReference<Function<String, Result<String>>>(new Function<String, Result<String>>() {
-            @NonNull
-            @Override
-            public Result<String> apply(@NonNull String input) {
-                if (password.equals(input))
-                    return Result.success(input);
-                return Result.failure(new Exception("The two passwords must be consistent"));
-            }
+        Log.e("--","---checkConfirmPassword--01");
+        WeakReference<Function<String, Result<String>>> weakReference = new WeakReference<Function<String, Result<String>>>(input->{
+            if (password.equals(input))
+                return Result.success(input);
+            return Result.failure(new Exception("The two passwords must be consistent"));
         });
         return weakReference.get();
     }
@@ -95,38 +87,33 @@ public class LoginFunctionsImp implements LoginFunctionInter {
      * Error handle
      */
     @Override
-    public Function<Throwable, Object> handleError(final View view) {
-        WeakReference<Function<Throwable, Object>> weakReference = new WeakReference<Function<Throwable, Object>>(new Function<Throwable, Object>() {
-            @NonNull
-            @Override
-            public Object apply(@NonNull Throwable input) {
-                ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
-                if (view == null) {
-                    Toast.makeText(MyApp.getInstance(), input.getMessage(), Toast.LENGTH_SHORT).show();
-                } else {
-                    Snackbar.make(view, input.getMessage(), Snackbar.LENGTH_SHORT).show();
-                }
-                return view;
+    public Function<Throwable, Result<HttpResponse>> handleError(final View view) {
+        Log.e("--","---handleError--01");
+        WeakReference<Function<Throwable, Result<HttpResponse>>> weakReference = new WeakReference<Function<Throwable, Result<HttpResponse>>>(input->{
+            ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if (view == null) {
+                Toast.makeText(MyApp.getInstance(), input.getMessage(), Toast.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(view, input.getMessage(), Snackbar.LENGTH_SHORT).show();
             }
+            return Result.<HttpResponse>absent();
         });
         return weakReference.get();
     }
 
 
     @Override
-    public Function<Pair<String, String>, Result<String>> register(final Callback cb) {
-        final WeakReference<Function<Pair<String, String>, Result<String>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<String>>>(new Function<Pair<String, String>, Result<String>>() {
-            @NonNull
-            @Override
-            public Result<String> apply(@NonNull Pair<String, String> input) {
-                try {
-                    TaskDriver.instance().execute(Restful.register(input.first, input.second, cb));
-                    return Result.success("");
-                } catch (Exception e) {
-                    if (cb != null)
-                        cb.error(e);
-                    return Result.failure(e);
-                }
+    public Function<Pair<String, String>, Result<HttpResponse>> register(final Callback cb) {
+        Log.e("--","---register--01");
+        final WeakReference<Function<Pair<String, String>, Result<HttpResponse>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<HttpResponse>>>(input->{
+            try {
+                HttpTask task = Restful.register(input.first, input.second, cb);
+                TaskDriver.instance().execute(task);
+                return task.get();
+            } catch (Exception e) {
+                if (cb != null)
+                    cb.error(e);
+                return Result.failure(e);
             }
         });
         return weakReference.get();

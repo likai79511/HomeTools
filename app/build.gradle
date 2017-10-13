@@ -2,36 +2,39 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion '25.0.0'
+
     defaultConfig {
         applicationId "com.agera.hometools"
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+        jackOptions {
+            enabled true
+        }
+
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-       /* debug{
-            storeFile file("../key/debug_key.jks")
-            storePassword "123456"
-            keyAlias "hometools"
-            keyPassword "123456"
-        }*/
+        debug{
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
     }
 
     signingConfigs {
         release {
-           storeFile file("../key/debug_key.jks")
+            storeFile file("../key/debug_key.jks")
             storePassword "123456"
             keyAlias "hometools"
             keyPassword "123456"
         }
         debug {
-   
             storeFile file("../key/debug_key.jks")
             storePassword "123456"
             keyAlias "hometools"
@@ -39,6 +42,10 @@ android {
         }
     }
 
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
 }
 
 dependencies {

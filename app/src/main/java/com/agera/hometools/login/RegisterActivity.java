@@ -13,22 +13,27 @@ import com.agera.hometools.R;
 import com.google.android.agera.BaseObservable;
 import com.google.android.agera.Function;
 import com.google.android.agera.Merger;
+import com.google.android.agera.Predicate;
+import com.google.android.agera.Receiver;
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
 import com.google.android.agera.Result;
 import com.google.android.agera.Supplier;
 import com.google.android.agera.Updatable;
+import com.google.android.agera.net.HttpResponse;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RegisterActivity extends Activity implements Updatable {
-    private boolean flag = false;
     private EditText mEt_tel = null;
     private EditText mEt_password = null;
     private EditText mEt_confirm_password = null;
     private String tel = null;
     private String password = null;
     private String confirm_password = null;
-    private Repository mRep = null;
+    private Repository<Result<HttpResponse>> mRep = null;
     private OnClickListenerObservable mOb = null;
+    private AtomicBoolean activeOnce = new AtomicBoolean(false);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,55 +47,54 @@ public class RegisterActivity extends Activity implements Updatable {
     private void initEvents() {
         mOb = new OnClickListenerObservable();
         findViewById(R.id.btn_register).setOnClickListener(mOb);
-        mRep = Repositories.repositoryWithInitialValue(null)
+        mRep = Repositories.repositoryWithInitialValue(Result.<HttpResponse>absent())
                 .observe(mOb)
                 .onUpdatesPerLoop()
-                .getFrom(new Supplier<String>() {                           //get telephone number
-                    @NonNull
-                    @Override
-                    public String get() {
-                        tel = mEt_tel == null ? null : mEt_tel.getText() == null ? null : mEt_tel.getText().toString().trim();
-                        return tel;
-                    }
+                .check(o->activeOnce.getAndSet(true))
+                .orSkip()
+                .getFrom(()->{
+                    Log.e("---","--getFrom-");
+                    tel = mEt_tel == null ? null : mEt_tel.getText() == null ? null : mEt_tel.getText().toString().trim();
+                    return tel;
                 })
-                .attemptTransform(LoginFunctionsImp.instance().checkTel())      //telephone number
-                .orEnd(LoginFunctionsImp.instance().handleError(mEt_tel))              //handle number error
-                .getFrom(new Supplier<String>() {                            //get password
-                    @NonNull
-                    @Override
-                    public String get() {
-                        password = mEt_password == null ? null : mEt_password.getText() == null ? null : mEt_password.getText().toString().trim();
-                        return password;
-                    }
+                .attemptTransform(input->{
+                    return LoginFunctionsImp.instance().checkTel().apply(input);
                 })
-                .attemptTransform(LoginFunctionsImp.instance().checkPassword())    //check password
-                .orEnd(LoginFunctionsImp.instance().handleError(mEt_password))                 //hanlde password  error
-                .getFrom(new Supplier<String>() {                               //get confirm password
-                    @NonNull
-                    @Override
-                    public String get() {
-                        confirm_password = mEt_confirm_password == null ? null : mEt_confirm_password.getText() == null ? null : mEt_confirm_password.getText().toString().trim();
-                        return confirm_password;
-                    }
+                .orEnd(e->{
+                    return LoginFunctionsImp.instance().handleError(mEt_tel).apply(e);
                 })
-                .attemptTransform(LoginFunctionsImp.instance().checkConfirmPassword(password))
-                .orEnd(LoginFunctionsImp.instance().handleError(mEt_confirm_password))
-                .transform(new Function<String, Pair<String, String>>() {
-                    @NonNull
-                    @Override
-                    public Pair<String, String> apply(@NonNull String input) {
-                        return Pair.create(tel, password);
-                    }
+                .getFrom(()->{
+                    password = mEt_password == null ? null : mEt_password.getText() == null ? null : mEt_password.getText().toString().trim();
+                    return password;
                 })
-                .thenTransform(LoginFunctionsImp.instance().register(null))
-                .notifyIf(new Merger<Object, Object, Boolean>() {
-                    @NonNull
-                    @Override
-                    public Boolean merge(@NonNull Object o, @NonNull Object o2) {
-                        return o!=null;
-                    }
+                .attemptTransform(s->{
+                    return LoginFunctionsImp.instance().checkPassword().apply(s);
+                })
+                .orEnd(e->{
+                    return LoginFunctionsImp.instance().handleError(mEt_password).apply(e);
+                })
+                .getFrom(()->{
+                    confirm_password = mEt_confirm_password == null ? null : mEt_confirm_password.getText() == null ? null : mEt_confirm_password.getText().toString().trim();
+                    return confirm_password;
+                })
+                .attemptTransform(e->{
+                    return LoginFunctionsImp.instance().checkConfirmPassword(password).apply(e);
+                })
+                .orEnd(e->{
+                    return LoginFunctionsImp.instance().handleError(mEt_confirm_password).apply(e);
+                })
+                .transform(s->{
+                    return Pair.create(tel, password);
+                })
+                .thenTransform(p->{
+                    return LoginFunctionsImp.instance().register(null).apply(p);
+                })
+                .notifyIf((o1,o2)->{
+                    return o1!=null;
                 })
                 .compile();
+        activeOnce.set(false);
+        mRep.addUpdatable(this);
     }
 
     private void initViews() {
@@ -102,19 +106,32 @@ public class RegisterActivity extends Activity implements Updatable {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mRep.removeUpdatable(this);
     }
 
     @Override
     public void update() {
-
-
+        mRep.get()
+                .ifSucceededSendTo(new Receiver<HttpResponse>() {
+                    @Override
+                    public void accept(@NonNull HttpResponse value) {
+                        Log.e("---", "--result:success\n" + value);
+                    }
+                })
+                .ifFailedSendTo(new Receiver<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable value) {
+                        Log.e("---", "---update:failed\n" + value.getMessage());
+                    }
+                });
     }
 
     class OnClickListenerObservable extends BaseObservable implements Button.OnClickListener {
         @Override
         public void onClick(View v) {
             dispatchUpdate();
-            mRep.get();
         }
     }
+
+
 }
