@@ -29,5 +29,4 @@ dependencies {
     compile files('libs/gson-2.8.1.jar')
     compile 'com.android.support:support-v4:23.3.0'
     compile 'com.android.support:design:23.0.1'
-    compile files('libs/AMap_all.jar')
 }

@@ -12,13 +12,10 @@ import android.widget.EditText;
 import com.agera.hometools.R;
 import com.google.android.agera.BaseObservable;
 import com.google.android.agera.Function;
-import com.google.android.agera.Merger;
-import com.google.android.agera.Predicate;
 import com.google.android.agera.Receiver;
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
 import com.google.android.agera.Result;
-import com.google.android.agera.Supplier;
 import com.google.android.agera.Updatable;
 import com.google.android.agera.net.HttpResponse;
 
@@ -50,48 +47,32 @@ public class RegisterActivity extends Activity implements Updatable {
         mRep = Repositories.repositoryWithInitialValue(Result.<HttpResponse>absent())
                 .observe(mOb)
                 .onUpdatesPerLoop()
-                .check(o->activeOnce.getAndSet(true))
+                .check(o -> activeOnce.getAndSet(true))
                 .orSkip()
-                .getFrom(()->{
-                    Log.e("---","--getFrom-");
+                .getFrom(() -> {
                     tel = mEt_tel == null ? null : mEt_tel.getText() == null ? null : mEt_tel.getText().toString().trim();
                     return tel;
                 })
-                .attemptTransform(input->{
-                    return LoginFunctionsImp.instance().checkTel().apply(input);
-                })
-                .orEnd(e->{
-                    return LoginFunctionsImp.instance().handleError(mEt_tel).apply(e);
-                })
-                .getFrom(()->{
+                .attemptTransform(s->LoginFunctionsImp.instance().checkTel().apply(s))
+                .orEnd(e->LoginFunctionsImp.instance().handleError(mEt_tel).apply(e))
+                .getFrom(() -> {
                     password = mEt_password == null ? null : mEt_password.getText() == null ? null : mEt_password.getText().toString().trim();
                     return password;
                 })
-                .attemptTransform(s->{
-                    return LoginFunctionsImp.instance().checkPassword().apply(s);
-                })
-                .orEnd(e->{
-                    return LoginFunctionsImp.instance().handleError(mEt_password).apply(e);
-                })
-                .getFrom(()->{
+                .attemptTransform(s->LoginFunctionsImp.instance().checkPassword().apply(s))
+                .orEnd(e->LoginFunctionsImp.instance().handleError(mEt_password).apply(e))
+                .getFrom(() -> {
                     confirm_password = mEt_confirm_password == null ? null : mEt_confirm_password.getText() == null ? null : mEt_confirm_password.getText().toString().trim();
                     return confirm_password;
                 })
-                .attemptTransform(e->{
-                    return LoginFunctionsImp.instance().checkConfirmPassword(password).apply(e);
-                })
-                .orEnd(e->{
-                    return LoginFunctionsImp.instance().handleError(mEt_confirm_password).apply(e);
-                })
-                .transform(s->{
-                    return Pair.create(tel, password);
-                })
-                .thenTransform(p->{
-                    return LoginFunctionsImp.instance().register(null).apply(p);
-                })
-                .notifyIf((o1,o2)->{
-                    return o1!=null;
-                })
+                .attemptTransform(s->LoginFunctionsImp.instance().checkConfirmPassword(password).apply(s))
+                .orEnd(e->LoginFunctionsImp.instance().handleError(mEt_confirm_password).apply(e))
+                .transform(s -> Pair.create(tel, password))
+                .attemptTransform(s->LoginFunctionsImp.instance().register(null).apply(s))
+                .orSkip()
+                .thenSkip()
+                //.s->LoginFunctionsImp.instance().register(null).apply(s)
+                .notifyIf((o1, o2) -> o1 != null)
                 .compile();
         activeOnce.set(false);
         mRep.addUpdatable(this);
