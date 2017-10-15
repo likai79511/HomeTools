@@ -26,13 +26,11 @@ public class HttpTask extends FutureTask<Result<HttpResponse>> {
 
     private HttpTask(@NonNull Callable<Result<HttpResponse>> callable) {
         super(callable);
-        Log.e("---", "--new:" + Thread.currentThread().getId());
     }
 
     private HttpTask(@NonNull Callable<Result<HttpResponse>> callable, Callback cb) {
         super(callable);
         this.callable = cb;
-        Log.e("---", "--new:" + Thread.currentThread().getId());
     }
 
     public static HttpTask createHttpTask(@NonNull Callable<Result<HttpResponse>> callable,Callback callback) {
@@ -41,7 +39,6 @@ public class HttpTask extends FutureTask<Result<HttpResponse>> {
 
     @Override
     protected void done() {
-        Log.e("---", "--done:" + Thread.currentThread().getId());
         if (callable != null) {
             try {
                 get()
@@ -75,7 +72,6 @@ public class HttpTask extends FutureTask<Result<HttpResponse>> {
     @Override
     public void run() {
         try {
-            Log.e("---", "--run:" + Thread.currentThread().getId());
             TaskDriver.instance().mControl.acquire();
             isLocked = true;
             if (!Thread.interrupted()) {

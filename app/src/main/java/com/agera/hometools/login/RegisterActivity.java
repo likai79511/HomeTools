@@ -1,17 +1,20 @@
 package com.agera.hometools.login;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.Pair;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.agera.hometools.MyApp;
 import com.agera.hometools.R;
 import com.google.android.agera.BaseObservable;
-import com.google.android.agera.Function;
+import com.google.android.agera.Merger;
 import com.google.android.agera.Receiver;
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
@@ -19,6 +22,7 @@ import com.google.android.agera.Result;
 import com.google.android.agera.Updatable;
 import com.google.android.agera.net.HttpResponse;
 
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RegisterActivity extends Activity implements Updatable {
@@ -42,6 +46,7 @@ public class RegisterActivity extends Activity implements Updatable {
     }
 
     private void initEvents() {
+        Log.e("---","---main-threadID:"+Thread.currentThread().getId());
         mOb = new OnClickListenerObservable();
         findViewById(R.id.btn_register).setOnClickListener(mOb);
         mRep = Repositories.repositoryWithInitialValue(Result.<HttpResponse>absent())
@@ -53,26 +58,25 @@ public class RegisterActivity extends Activity implements Updatable {
                     tel = mEt_tel == null ? null : mEt_tel.getText() == null ? null : mEt_tel.getText().toString().trim();
                     return tel;
                 })
-                .attemptTransform(s->LoginFunctionsImp.instance().checkTel().apply(s))
-                .orEnd(e->LoginFunctionsImp.instance().handleError(mEt_tel).apply(e))
+                .attemptTransform(s -> LoginFunctionsImp.instance().checkTel().apply(s))
+                .orEnd(e -> LoginFunctionsImp.instance().handleError(mEt_tel).apply(e))
                 .getFrom(() -> {
                     password = mEt_password == null ? null : mEt_password.getText() == null ? null : mEt_password.getText().toString().trim();
                     return password;
                 })
-                .attemptTransform(s->LoginFunctionsImp.instance().checkPassword().apply(s))
-                .orEnd(e->LoginFunctionsImp.instance().handleError(mEt_password).apply(e))
+                .attemptTransform(s -> LoginFunctionsImp.instance().checkPassword().apply(s))
+                .orEnd(e -> LoginFunctionsImp.instance().handleError(mEt_password).apply(e))
                 .getFrom(() -> {
                     confirm_password = mEt_confirm_password == null ? null : mEt_confirm_password.getText() == null ? null : mEt_confirm_password.getText().toString().trim();
                     return confirm_password;
                 })
-                .attemptTransform(s->LoginFunctionsImp.instance().checkConfirmPassword(password).apply(s))
-                .orEnd(e->LoginFunctionsImp.instance().handleError(mEt_confirm_password).apply(e))
-                .transform(s -> Pair.create(tel, password))
-                .attemptTransform(s->LoginFunctionsImp.instance().register(null).apply(s))
+                .attemptTransform(s -> LoginFunctionsImp.instance().checkConfirmPassword(password).apply(s))
+                .orEnd(e -> LoginFunctionsImp.instance().handleError(mEt_confirm_password).apply(e))
+                .goLazy()
+                .transform(s -> LoginFunctionsImp.instance().register(null).apply(Pair.create(tel, password)))
+                .check(result->LoginFunctionsImp.instance().checkRegister(getCurrentFocus()).apply(result))
                 .orSkip()
                 .thenSkip()
-                //.s->LoginFunctionsImp.instance().register(null).apply(s)
-                .notifyIf((o1, o2) -> o1 != null)
                 .compile();
         activeOnce.set(false);
         mRep.addUpdatable(this);
@@ -92,16 +96,25 @@ public class RegisterActivity extends Activity implements Updatable {
 
     @Override
     public void update() {
+        Log.e("---", "---update--");
+        ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         mRep.get()
                 .ifSucceededSendTo(new Receiver<HttpResponse>() {
                     @Override
                     public void accept(@NonNull HttpResponse value) {
-                        Log.e("---", "--result:success\n" + value);
+                        try {
+                            Log.e("---","---threadID:"+Thread.currentThread().getId());
+                            Log.e("---", "--result:success\n" + value + "\nmsg:" + value.getResponseMessage() + "\nbody:" + value.getBodyString().get() + "\nbody02:" + new String(value.getBody(), "UTF-8"));
+                        } catch (UnsupportedEncodingException e) {
+                            Log.e("---", "----occuer error:" + e.getMessage());
+                            e.printStackTrace();
+                        }
                     }
                 })
                 .ifFailedSendTo(new Receiver<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable value) {
+                        Log.e("---","---threadID:"+Thread.currentThread().getId());
                         Log.e("---", "---update:failed\n" + value.getMessage());
                     }
                 });

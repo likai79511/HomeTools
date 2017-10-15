@@ -24,10 +24,13 @@ public class Restful {
 
     private static Gson gson = new Gson();
 
+    private static final String TELEPHONE = "telephone";
+    private static final String PASSWORD = "password";
+
     //regist
     public static HttpTask register(String name, String password,Callback cb) {
         return HttpTask.createHttpTask(new HttpCallable(HttpRequests.httpPostRequest(register_url)
-                .body(gson.toJson(new AppendMap().put("name", name).put("password", password).compile()).getBytes())
+                .body(gson.toJson(new AppendMap().put(TELEPHONE, name).put(PASSWORD, password).compile()).getBytes())
                 .headerField(applicationIdDesc, applicationId)
                 .headerField(rest_keyDesc, rest_key)
                 .headerField(content_type, format_jason)

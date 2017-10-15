@@ -15,7 +15,9 @@ import com.agera.hometools.core.HttpTask;
 import com.agera.hometools.core.TaskDriver;
 import com.agera.hometools.network.Callback;
 import com.agera.hometools.network.Restful;
+import com.google.android.agera.Binder;
 import com.google.android.agera.Function;
+import com.google.android.agera.Predicate;
 import com.google.android.agera.Result;
 import com.google.android.agera.net.HttpResponse;
 
@@ -111,6 +113,23 @@ public class LoginFunctionsImp implements LoginFunctionInter {
                     cb.error(e);
                 return Result.failure(e);
             }
+        });
+        return weakReference.get();
+    }
+
+
+    @Override
+    public Predicate<Result<HttpResponse>> checkRegister(View view) {
+        WeakReference<Predicate<Result<HttpResponse>>> weakReference = new WeakReference<Predicate<Result<HttpResponse>>>(result->{
+            if (result.failed() || result.get().getResponseCode()>400){
+                if (view == null) {
+                    Toast.makeText(MyApp.getInstance(),"注册失败,该手机号已被使用", Toast.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(view, "注册失败,该手机号已被使用", Snackbar.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+            return true;
         });
         return weakReference.get();
     }

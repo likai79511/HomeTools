@@ -428,7 +428,7 @@ public interface RepositoryCompilerStates {
    *
    * @param <TVal> Repository value type.
    */
-  interface dRConfig<TVal> {
+  interface RConfig<TVal> {
 
     /**
      * Specifies that this repository should notify the registered {@link Updatable}s if and only if
