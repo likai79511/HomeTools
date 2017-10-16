@@ -18,23 +18,17 @@ public interface LoginFunctionInter {
     /**
      * Check Telphone Function
      */
-    Function<String, Result<String>> checkTel();
+    Predicate<String> checkTel(View view);
 
     /**
      * Check password Function
      */
-    Function<String, Result<String>> checkPassword();
-
+    Predicate<String> checkPassword(View view);
 
     /**
      * Check confirm password Function
      */
-    Function<String, Result<String>> checkConfirmPassword(final String password);
-
-    /**
-     * Error handle
-     */
-    Function<Throwable, Result<HttpResponse>> handleError(View view);
+    Predicate<String> checkConfirmPassword(String password,View view);
 
     /**
      * Register
@@ -43,7 +37,7 @@ public interface LoginFunctionInter {
      *       If callback is null, will use the observer{@link com.google.android.agera.Updatable} to pull result from  Repository by manually.
      *       If callback is no-null,The futuretask will handle result by self.
      */
-    Function<Pair<String,String>, Result<HttpResponse>> register(Callback callback);
+    Function<Pair<String,String>, Result<HttpResponse>> register(Callback callback,View view);
 
     /**
      * Check Register
@@ -51,4 +45,5 @@ public interface LoginFunctionInter {
      * @return
      */
     Predicate<Result<HttpResponse>> checkRegister(View view);
+
 }

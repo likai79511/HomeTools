@@ -1,7 +1,6 @@
 package com.agera.hometools.login;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,7 +14,6 @@ import com.agera.hometools.core.HttpTask;
 import com.agera.hometools.core.TaskDriver;
 import com.agera.hometools.network.Callback;
 import com.agera.hometools.network.Restful;
-import com.google.android.agera.Binder;
 import com.google.android.agera.Function;
 import com.google.android.agera.Predicate;
 import com.google.android.agera.Result;
@@ -46,12 +44,18 @@ public class LoginFunctionsImp implements LoginFunctionInter {
      * Check Telphone Function
      */
     @Override
-    public Function<String, Result<String>> checkTel() {
-        WeakReference<Function<String, Result<String>>> weakReference = new WeakReference<Function<String, Result<String>>>(s->{
-            if (TextUtils.isEmpty(s) || s.length() != 11){
-                return Result.failure(new Exception("telephone lenth is wrong"));
+    public Predicate<String> checkTel(View view) {
+        WeakReference<Predicate<String>> weakReference = new WeakReference<Predicate<String>>(s -> {
+            ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if (TextUtils.isEmpty(s) || s.length() != 11) {
+                if (view == null) {
+                    Toast.makeText(MyApp.getInstance(), "telephone lenth is wrong", Toast.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(view, "telephone lenth is wrong", Snackbar.LENGTH_SHORT).show();
+                }
+                return false;
             }
-            return Result.success(s);
+            return true;
         });
         return weakReference.get();
     }
@@ -60,11 +64,18 @@ public class LoginFunctionsImp implements LoginFunctionInter {
      * Check password Function
      */
     @Override
-    public Function<String, Result<String>> checkPassword() {
-        WeakReference<Function<String, Result<String>>> weakReference = new WeakReference<Function<String, Result<String>>>(input->{
-            if (TextUtils.isEmpty(input) || input.length() <= 6)
-                return Result.failure(new Exception("password length must is 6~11"));
-            return Result.success(input);
+    public Predicate<String> checkPassword(View view) {
+        WeakReference<Predicate<String>> weakReference = new WeakReference<Predicate<String>>(input -> {
+            ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if (TextUtils.isEmpty(input) || input.length() <= 6) {
+                if (view == null) {
+                    Toast.makeText(MyApp.getInstance(), "password length must is 6~11", Toast.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(view, "password length must is 6~11", Snackbar.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+            return true;
         });
         return weakReference.get();
     }
@@ -73,39 +84,30 @@ public class LoginFunctionsImp implements LoginFunctionInter {
      * Check confirm password Function
      */
     @Override
-    public Function<String, Result<String>> checkConfirmPassword(final String password) {
-        WeakReference<Function<String, Result<String>>> weakReference = new WeakReference<Function<String, Result<String>>>(input->{
-            if (password.equals(input))
-                return Result.success(input);
-            return Result.failure(new Exception("The two passwords must be consistent"));
-        });
-        return weakReference.get();
-    }
-
-
-    /**
-     * Error handle
-     */
-    @Override
-    public Function<Throwable, Result<HttpResponse>> handleError(final View view) {
-        WeakReference<Function<Throwable, Result<HttpResponse>>> weakReference = new WeakReference<Function<Throwable, Result<HttpResponse>>>(input->{
+    public Predicate<String> checkConfirmPassword(final String password,View view) {
+        WeakReference<Predicate<String>> weakReference = new WeakReference<Predicate<String>>(input -> {
             ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if (password.equals(input))
+                return true;
             if (view == null) {
-                Toast.makeText(MyApp.getInstance(), input.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyApp.getInstance(), "The two passwords must be consistent", Toast.LENGTH_SHORT).show();
             } else {
-                Snackbar.make(view, input.getMessage(), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(view, "The two passwords must be consistent", Snackbar.LENGTH_SHORT).show();
             }
-            return Result.<HttpResponse>absent();
+            return false;
         });
         return weakReference.get();
     }
 
 
     @Override
-    public Function<Pair<String, String>, Result<HttpResponse>> register(final Callback cb) {
-        final WeakReference<Function<Pair<String, String>, Result<HttpResponse>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<HttpResponse>>>(input->{
+    public Function<Pair<String, String>, Result<HttpResponse>> register(final Callback cb,View view) {
+        Log.e("---","--register-01-"+Thread.currentThread().getId());
+        final WeakReference<Function<Pair<String, String>, Result<HttpResponse>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<HttpResponse>>>(input -> {
             try {
+                Log.e("---","--register-02-"+Thread.currentThread().getId());
                 HttpTask task = Restful.register(input.first, input.second, cb);
+                view.setClickable(false);
                 TaskDriver.instance().execute(task);
                 return task.get();
             } catch (Exception e) {
@@ -120,17 +122,24 @@ public class LoginFunctionsImp implements LoginFunctionInter {
 
     @Override
     public Predicate<Result<HttpResponse>> checkRegister(View view) {
-        WeakReference<Predicate<Result<HttpResponse>>> weakReference = new WeakReference<Predicate<Result<HttpResponse>>>(result->{
-            if (result.failed() || result.get().getResponseCode()>400){
+        Log.e("---","--checkRegister-01-"+Thread.currentThread().getId());
+        WeakReference<Predicate<Result<HttpResponse>>> weakReference = new WeakReference<Predicate<Result<HttpResponse>>>(result -> {
+            Log.e("---","--checkRegister-02-"+Thread.currentThread().getId());
+            ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+            view.setClickable(true);
+            if (result.failed() || result.get().getResponseCode() > 400) {
+                Log.e("---","--checkRegister-03-");
                 if (view == null) {
-                    Toast.makeText(MyApp.getInstance(),"注册失败,该手机号已被使用", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyApp.getInstance(), "注册失败,该手机号已被使用", Toast.LENGTH_SHORT).show();
                 } else {
                     Snackbar.make(view, "注册失败,该手机号已被使用", Snackbar.LENGTH_SHORT).show();
                 }
                 return false;
             }
+            Log.e("---","--checkRegister-04-");
             return true;
         });
         return weakReference.get();
     }
+
 }
