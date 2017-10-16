@@ -21,7 +21,7 @@
         <!-- AMap -->
         <meta-data
             android:name="com.amap.api.v2.apikey"
-            android:value="651c291cd2c1292ef5b1884f968568ee"/>
+            android:value="651c291cd2c1292ef5b1884f968568ee" />
 
         <activity android:name=".login.RegisterActivity">
             <intent-filter>
@@ -31,8 +31,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".LaunchActivity" />
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".locate.LocateActivity"></activity>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".locate.LocateActivity" />
+        <activity
+            android:name=".login.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -13,10 +13,7 @@ import android.widget.EditText;
 
 import com.agera.hometools.MyApp;
 import com.agera.hometools.R;
-import com.agera.hometools.core.TaskDriver;
 import com.google.android.agera.BaseObservable;
-import com.google.android.agera.Function;
-import com.google.android.agera.Merger;
 import com.google.android.agera.Receiver;
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
@@ -58,14 +55,12 @@ public class RegisterActivity extends Activity implements Updatable {
                 .check(o -> activeOnce.getAndSet(true))
                 .orSkip()
                 .getFrom(() -> {
-                    tel = mEt_tel == null ? null : mEt_tel.getText() == null ? null : mEt_tel.getText().toString().trim();
-                    return tel;
+                    return tel = mEt_tel == null ? null : mEt_tel.getText() == null ? null : mEt_tel.getText().toString().trim();
                 })
                 .check(tel->LoginFunctionsImp.instance().checkTel(mEt_tel).apply(tel))
                 .orSkip()
                 .getFrom(() -> {
-                    password = mEt_password == null ? null : mEt_password.getText() == null ? null : mEt_password.getText().toString().trim();
-                    return password;
+                    return password = mEt_password == null ? null : mEt_password.getText() == null ? null : mEt_password.getText().toString().trim();
                 })
                 .check(password->LoginFunctionsImp.instance().checkPassword(mEt_password).apply(password))
                 .orSkip()
@@ -76,23 +71,7 @@ public class RegisterActivity extends Activity implements Updatable {
                 .check(confirm_password -> LoginFunctionsImp.instance().checkConfirmPassword(password,mEt_confirm_password).apply(confirm_password))
                 .orSkip()
                 .thenTransform(s -> LoginFunctionsImp.instance().register(null,mBtn_register).apply(Pair.create(tel, password)))
-                .notifyIf(new Merger<Result<HttpResponse>, Result<HttpResponse>, Boolean>() {
-                    @NonNull
-                    @Override
-                    public Boolean merge(@NonNull Result<HttpResponse> httpResponseResult, @NonNull Result<HttpResponse> httpResponseResult2) {
-                        Log.e("---","---notifyIf--");
-                        Log.e("---","---notifyIf--httpResponseResult:"+httpResponseResult);
-                        if (!httpResponseResult.isAbsent()){
-                            Log.e("---","---notifyIf--httpResponseResult.get: "+httpResponseResult.get());
-                        }
-                        Log.e("---","---notifyIf--httpResponseResult2:"+httpResponseResult2);
-                        if (httpResponseResult2!=null && !httpResponseResult2.isAbsent() && httpResponseResult2.succeeded()){
-                            Log.e("---","---notifyIf--httpResponseResult2.get:"+httpResponseResult2.get());
-                        }
-                        return  LoginFunctionsImp.instance().checkRegister(mBtn_register).apply(httpResponseResult2);
-                    }
-                })
-//                .check(result->LoginFunctionsImp.instance().checkRegister(mBtn_register).apply(result))
+                .notifyIf((response1,response2)-> LoginFunctionsImp.instance().checkRegister(mBtn_register).apply(response2))
                 .compile();
         activeOnce.set(false);
         mRep.addUpdatable(this);

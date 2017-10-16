@@ -3,7 +3,6 @@ package com.agera.hometools.login;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -84,7 +83,7 @@ public class LoginFunctionsImp implements LoginFunctionInter {
      * Check confirm password Function
      */
     @Override
-    public Predicate<String> checkConfirmPassword(final String password,View view) {
+    public Predicate<String> checkConfirmPassword(final String password, View view) {
         WeakReference<Predicate<String>> weakReference = new WeakReference<Predicate<String>>(input -> {
             ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
             if (password.equals(input))
@@ -101,11 +100,9 @@ public class LoginFunctionsImp implements LoginFunctionInter {
 
 
     @Override
-    public Function<Pair<String, String>, Result<HttpResponse>> register(final Callback cb,View view) {
-        Log.e("---","--register-01-"+Thread.currentThread().getId());
-        final WeakReference<Function<Pair<String, String>, Result<HttpResponse>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<HttpResponse>>>(input -> {
+    public Function<Pair<String, String>, Result<HttpResponse>> register(final Callback cb, View view) {
+        WeakReference<Function<Pair<String, String>, Result<HttpResponse>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<HttpResponse>>>(input -> {
             try {
-                Log.e("---","--register-02-"+Thread.currentThread().getId());
                 HttpTask task = Restful.register(input.first, input.second, cb);
                 view.setClickable(false);
                 TaskDriver.instance().execute(task);
@@ -122,13 +119,10 @@ public class LoginFunctionsImp implements LoginFunctionInter {
 
     @Override
     public Predicate<Result<HttpResponse>> checkRegister(View view) {
-        Log.e("---","--checkRegister-01-"+Thread.currentThread().getId());
         WeakReference<Predicate<Result<HttpResponse>>> weakReference = new WeakReference<Predicate<Result<HttpResponse>>>(result -> {
-            Log.e("---","--checkRegister-02-"+Thread.currentThread().getId());
             ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
             view.setClickable(true);
             if (result.failed() || result.get().getResponseCode() > 400) {
-                Log.e("---","--checkRegister-03-");
                 if (view == null) {
                     Toast.makeText(MyApp.getInstance(), "注册失败,该手机号已被使用", Toast.LENGTH_SHORT).show();
                 } else {
@@ -136,8 +130,25 @@ public class LoginFunctionsImp implements LoginFunctionInter {
                 }
                 return false;
             }
-            Log.e("---","--checkRegister-04-");
             return true;
+        });
+        return weakReference.get();
+    }
+
+
+    @Override
+    public Function<Pair<String, String>, Result<HttpResponse>> login(Callback cb, View view) {
+        WeakReference<Function<Pair<String, String>, Result<HttpResponse>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<HttpResponse>>>(input -> {
+            try {
+                HttpTask task = Restful.register(input.first, input.second, cb);
+                view.setClickable(false);
+                TaskDriver.instance().execute(task);
+                return task.get();
+            } catch (Exception e) {
+                if (cb != null)
+                    cb.error(e);
+                return Result.failure(e);
+            }
         });
         return weakReference.get();
     }

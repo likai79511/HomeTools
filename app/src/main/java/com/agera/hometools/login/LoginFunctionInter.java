@@ -4,7 +4,6 @@ import android.util.Pair;
 import android.view.View;
 
 import com.agera.hometools.network.Callback;
-import com.google.android.agera.Binder;
 import com.google.android.agera.Function;
 import com.google.android.agera.Predicate;
 import com.google.android.agera.Result;
@@ -45,5 +44,17 @@ public interface LoginFunctionInter {
      * @return
      */
     Predicate<Result<HttpResponse>> checkRegister(View view);
+
+
+    /**
+     * Login
+     *      send a request to login
+     Note: These are two ways to get Http-Response data
+     *       If callback is null, will use the observer{@link com.google.android.agera.Updatable} to pull result from  Repository by manually.
+     *       If callback is no-null,The futuretask will handle result by self.
+     */
+    Function<Pair<String,String>, Result<HttpResponse>> login(Callback callback,View view);
+
+
 
 }

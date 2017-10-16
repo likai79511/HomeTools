@@ -38,4 +38,10 @@ public class Restful {
                 .readTimeoutMs(timeout)
                 .compile()),cb);
     }
+
+
+    //login
+    public static HttpTask login(String name,String password,Callback cb){
+        
+    }
 }

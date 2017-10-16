@@ -21,7 +21,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        debug{
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -51,4 +51,5 @@ android {
 dependencies {
     compile project(':agera')
     compile files('libs/AMap_all.jar')
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }
