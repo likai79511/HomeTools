@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/HomeTools.iml" filepath="$PROJECT_DIR$/HomeTools.iml" />
       <module fileurl="file://$PROJECT_DIR$/agera/agera.iml" filepath="$PROJECT_DIR$/agera/agera.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/myapplication/myapplication.iml" filepath="$PROJECT_DIR$/myapplication/myapplication.iml" />
     </modules>
   </component>
 </project>
