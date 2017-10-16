@@ -153,4 +153,21 @@ public class LoginFunctionsImp implements LoginFunctionInter {
         return weakReference.get();
     }
 
+    @Override
+    public Predicate<Result<HttpResponse>> checkLogin(View view) {
+        WeakReference<Predicate<Result<HttpResponse>>> weakReference = new WeakReference<Predicate<Result<HttpResponse>>>(result->{
+            ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+            if (result.failed()){
+                if (view == null || result.get().getResponseCode() > 400) {
+                    Toast.makeText(MyApp.getInstance(), "登录失败，账号密码有误", Toast.LENGTH_SHORT).show();
+                } else {
+                    Snackbar.make(view, "登录失败，账号密码有误", Snackbar.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+            return true;
+        });
+        return null;
+    }
+
 }

@@ -56,5 +56,11 @@ public interface LoginFunctionInter {
     Function<Pair<String,String>, Result<HttpResponse>> login(Callback callback,View view);
 
 
+    /**
+     * Check Login
+     *      According the response to check wether success
+     * @return
+     */
+    Predicate<Result<HttpResponse>> checkLogin(View view);
 
 }

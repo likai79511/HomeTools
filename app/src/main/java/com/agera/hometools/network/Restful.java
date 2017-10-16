@@ -11,7 +11,7 @@ import com.google.gson.Gson;
  */
 public class Restful {
 
-    private static final String register_url = "https://api.bmob.cn/1/classes/user";
+    private static final String user_url = "https://api.bmob.cn/1/classes/user";
     private static int timeout = 10_1000;
 
     private static String applicationIdDesc = "X-Bmob-Application-Id";
@@ -29,7 +29,7 @@ public class Restful {
 
     //regist
     public static HttpTask register(String name, String password,Callback cb) {
-        return HttpTask.createHttpTask(new HttpCallable(HttpRequests.httpPostRequest(register_url)
+        return HttpTask.createHttpTask(new HttpCallable(HttpRequests.httpPostRequest(user_url)
                 .body(gson.toJson(new AppendMap().put(TELEPHONE, name).put(PASSWORD, password).compile()).getBytes())
                 .headerField(applicationIdDesc, applicationId)
                 .headerField(rest_keyDesc, rest_key)
@@ -42,6 +42,12 @@ public class Restful {
 
     //login
     public static HttpTask login(String name,String password,Callback cb){
-        
+        return HttpTask.createHttpTask(new HttpCallable(HttpRequests.httpGetRequest(user_url+"?where={\"telephone\":"+name+",\"password\":"+password+"}")
+        .headerField(applicationIdDesc,applicationId)
+        .headerField(rest_keyDesc,rest_key)
+        .headerField(content_type,format_jason)
+        .connectTimeoutMs(timeout)
+        .readTimeoutMs(timeout)
+        .compile()),cb);
     }
 }
