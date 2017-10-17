@@ -13,6 +13,7 @@ import com.agera.hometools.core.HttpTask;
 import com.agera.hometools.core.TaskDriver;
 import com.agera.hometools.network.Callback;
 import com.agera.hometools.network.Restful;
+import com.agera.hometools.utils.CommonUtils;
 import com.google.android.agera.Function;
 import com.google.android.agera.Predicate;
 import com.google.android.agera.Result;
@@ -88,11 +89,7 @@ public class LoginFunctionsImp implements LoginFunctionInter {
             ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
             if (password.equals(input))
                 return true;
-            if (view == null) {
-                Toast.makeText(MyApp.getInstance(), "The two passwords must be consistent", Toast.LENGTH_SHORT).show();
-            } else {
-                Snackbar.make(view, "The two passwords must be consistent", Snackbar.LENGTH_SHORT).show();
-            }
+            CommonUtils.instance().showMessage("两次密码必须一致",view,Toast.LENGTH_SHORT);
             return false;
         });
         return weakReference.get();
@@ -103,6 +100,8 @@ public class LoginFunctionsImp implements LoginFunctionInter {
     public Function<Pair<String, String>, Result<HttpResponse>> register(final Callback cb, View view) {
         WeakReference<Function<Pair<String, String>, Result<HttpResponse>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<HttpResponse>>>(input -> {
             try {
+                ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+                CommonUtils.instance().showMessage("正在注册...",view,Toast.LENGTH_LONG);
                 HttpTask task = Restful.register(input.first, input.second, cb);
                 view.setClickable(false);
                 TaskDriver.instance().execute(task);
@@ -120,14 +119,9 @@ public class LoginFunctionsImp implements LoginFunctionInter {
     @Override
     public Predicate<Result<HttpResponse>> checkRegister(View view) {
         WeakReference<Predicate<Result<HttpResponse>>> weakReference = new WeakReference<Predicate<Result<HttpResponse>>>(result -> {
-            ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
             view.setClickable(true);
             if (result.failed() || result.get().getResponseCode() > 400) {
-                if (view == null) {
-                    Toast.makeText(MyApp.getInstance(), "注册失败,该手机号已被使用", Toast.LENGTH_SHORT).show();
-                } else {
-                    Snackbar.make(view, "注册失败,该手机号已被使用", Snackbar.LENGTH_SHORT).show();
-                }
+                CommonUtils.instance().showMessage("注册失败,该手机号已被使用",view,Toast.LENGTH_SHORT);
                 return false;
             }
             return true;
@@ -140,7 +134,7 @@ public class LoginFunctionsImp implements LoginFunctionInter {
     public Function<Pair<String, String>, Result<HttpResponse>> login(Callback cb, View view) {
         WeakReference<Function<Pair<String, String>, Result<HttpResponse>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<HttpResponse>>>(input -> {
             try {
-                HttpTask task = Restful.register(input.first, input.second, cb);
+                HttpTask task = Restful.login(input.first, input.second, cb);
                 view.setClickable(false);
                 TaskDriver.instance().execute(task);
                 return task.get();
@@ -158,16 +152,12 @@ public class LoginFunctionsImp implements LoginFunctionInter {
         WeakReference<Predicate<Result<HttpResponse>>> weakReference = new WeakReference<Predicate<Result<HttpResponse>>>(result->{
             ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
             if (result.failed()){
-                if (view == null || result.get().getResponseCode() > 400) {
-                    Toast.makeText(MyApp.getInstance(), "登录失败，账号密码有误", Toast.LENGTH_SHORT).show();
-                } else {
-                    Snackbar.make(view, "登录失败，账号密码有误", Snackbar.LENGTH_SHORT).show();
-                }
+                CommonUtils.instance().showMessage("登录失败，账号密码有误",view,Toast.LENGTH_SHORT);
                 return false;
             }
             return true;
         });
-        return null;
+        return weakReference.get();
     }
 
 }

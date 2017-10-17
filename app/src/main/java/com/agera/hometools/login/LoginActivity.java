@@ -2,6 +2,7 @@ package com.agera.hometools.login;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -15,15 +16,19 @@ import com.google.android.agera.Result;
 import com.google.android.agera.Updatable;
 import com.google.android.agera.net.HttpResponse;
 
-public class LoginActivity extends Activity implements Updatable{
+import java.util.concurrent.atomic.AtomicBoolean;
+
+public class LoginActivity extends Activity implements Updatable {
 
     private EditText mEt_tel = null;
     private EditText mEt_password = null;
     private Button mBtn_login = null;
     private OnClickListenerObservable mOb = null;
     private Repository<Result<HttpResponse>> mRep = null;
-    private String tel= null;
-    private String password= null;
+    private String tel = null;
+    private String password = null;
+    private AtomicBoolean activeOnce = new AtomicBoolean(false);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,21 +44,23 @@ public class LoginActivity extends Activity implements Updatable{
         mRep = Repositories.repositoryWithInitialValue(Result.<HttpResponse>absent())
                 .observe(mOb)
                 .onUpdatesPerLoop()
-                .getFrom(()->{
+                .check(o -> activeOnce.getAndSet(true))
+                .orSkip()
+                .getFrom(() -> {
                     return tel = mEt_tel == null ? null : mEt_tel.getText() == null ? null : mEt_tel.getText().toString().trim();
                 })
-                .check(s->LoginFunctionsImp.instance().checkTel(mEt_tel).apply(s))
+                .check(s -> LoginFunctionsImp.instance().checkTel(mEt_tel).apply(s))
                 .orSkip()
-                .getFrom(()->{
+                .getFrom(() -> {
                     return password = mEt_password == null ? null : mEt_password.getText() == null ? null : mEt_password.getText().toString().trim();
                 })
-                .check(s->LoginFunctionsImp.instance().checkPassword(mEt_password).apply(s))
+                .check(s -> LoginFunctionsImp.instance().checkPassword(mEt_password).apply(s))
                 .orSkip()
-                .thenTransform(s-> LoginFunctionsImp.instance().login(null,mBtn_login).apply(Pair.create(tel,password)))
-                .notifyIf((response1,response2)-> LoginFunctionsImp.instance().checkLogin(mBtn_login).apply(response2))
+                .thenTransform(s -> LoginFunctionsImp.instance().login(null, mBtn_login).apply(Pair.create(tel, password)))
+                .notifyIf((response1, response2) -> LoginFunctionsImp.instance().checkLogin(mBtn_login).apply(response2))
                 .compile();
-
-
+        activeOnce.set(false);
+        mRep.addUpdatable(this);
     }
 
     private void initView() {
@@ -64,10 +71,10 @@ public class LoginActivity extends Activity implements Updatable{
 
     @Override
     public void update() {
-
+        Log.e("---", "----logon success");
     }
 
-    class OnClickListenerObservable extends BaseObservable implements View.OnClickListener{
+    class OnClickListenerObservable extends BaseObservable implements View.OnClickListener {
         @Override
         public void onClick(View v) {
             dispatchUpdate();

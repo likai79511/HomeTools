@@ -1,27 +1,21 @@
 package com.agera.hometools.login;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.agera.hometools.MyApp;
 import com.agera.hometools.R;
 import com.google.android.agera.BaseObservable;
-import com.google.android.agera.Receiver;
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
 import com.google.android.agera.Result;
 import com.google.android.agera.Updatable;
 import com.google.android.agera.net.HttpResponse;
 
-import java.io.UnsupportedEncodingException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RegisterActivity extends Activity implements Updatable {
@@ -43,10 +37,10 @@ public class RegisterActivity extends Activity implements Updatable {
 
         initViews();
         initEvents();
+
     }
 
     private void initEvents() {
-        Log.e("---","---main-threadID:"+Thread.currentThread().getId());
         mOb = new OnClickListenerObservable();
         mBtn_register.setOnClickListener(mOb);
         mRep = Repositories.repositoryWithInitialValue(Result.<HttpResponse>absent())
@@ -75,6 +69,11 @@ public class RegisterActivity extends Activity implements Updatable {
                 .compile();
         activeOnce.set(false);
         mRep.addUpdatable(this);
+
+        findViewById(R.id.btn_login).setOnClickListener(l->{
+            startActivity(new Intent(this,LoginActivity.class));
+            finish();
+        });
     }
 
     private void initViews() {
@@ -88,32 +87,13 @@ public class RegisterActivity extends Activity implements Updatable {
     protected void onDestroy() {
         super.onDestroy();
         mRep.removeUpdatable(this);
+//        CommonUtils.instance().dismissSnackBar(mEt_tel,mEt_password,mEt_confirm_password,mBtn_register);
     }
 
     @Override
     public void update() {
-        Log.e("---", "---update--:"+Thread.currentThread().getId());
-        ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        mRep.get()
-                .ifSucceededSendTo(new Receiver<HttpResponse>() {
-                    @Override
-                    public void accept(@NonNull HttpResponse value) {
-                        try {
-                            Log.e("---","---threadID:"+Thread.currentThread().getId());
-                            Log.e("---", "--result:success\n" + value + "\nmsg:" + value.getResponseMessage() + "\nbody:" + value.getBodyString().get() + "\nbody02:" + new String(value.getBody(), "UTF-8"));
-                        } catch (UnsupportedEncodingException e) {
-                            Log.e("---", "----occuer error:" + e.getMessage());
-                            e.printStackTrace();
-                        }
-                    }
-                })
-                .ifFailedSendTo(new Receiver<Throwable>() {
-                    @Override
-                    public void accept(@NonNull Throwable value) {
-                        Log.e("---","---threadID:"+Thread.currentThread().getId());
-                        Log.e("---", "---update:failed\n" + value.getMessage());
-                    }
-                });
+        startActivity(new Intent(this,LoginActivity.class));
+        finish();
     }
 
     class OnClickListenerObservable extends BaseObservable implements Button.OnClickListener {
