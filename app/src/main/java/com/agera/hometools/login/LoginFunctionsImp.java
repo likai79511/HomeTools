@@ -3,12 +3,14 @@ package com.agera.hometools.login;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.agera.hometools.MyApp;
+import com.agera.hometools.bean.LoginResponse;
 import com.agera.hometools.core.HttpTask;
 import com.agera.hometools.core.TaskDriver;
 import com.agera.hometools.network.Callback;
@@ -134,6 +136,8 @@ public class LoginFunctionsImp implements LoginFunctionInter {
     public Function<Pair<String, String>, Result<HttpResponse>> login(Callback cb, View view) {
         WeakReference<Function<Pair<String, String>, Result<HttpResponse>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<HttpResponse>>>(input -> {
             try {
+                CommonUtils.instance().showMessage("正在登陆...",view,Snackbar.LENGTH_SHORT);
+                Log.e("---","---正在登陆--");
                 HttpTask task = Restful.login(input.first, input.second, cb);
                 view.setClickable(false);
                 TaskDriver.instance().execute(task);
@@ -141,6 +145,7 @@ public class LoginFunctionsImp implements LoginFunctionInter {
             } catch (Exception e) {
                 if (cb != null)
                     cb.error(e);
+                view.setClickable(true);
                 return Result.failure(e);
             }
         });
@@ -151,11 +156,18 @@ public class LoginFunctionsImp implements LoginFunctionInter {
     public Predicate<Result<HttpResponse>> checkLogin(View view) {
         WeakReference<Predicate<Result<HttpResponse>>> weakReference = new WeakReference<Predicate<Result<HttpResponse>>>(result->{
             ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
-            if (result.failed()){
-                CommonUtils.instance().showMessage("登录失败，账号密码有误",view,Toast.LENGTH_SHORT);
-                return false;
-            }
-            return true;
+            view.setClickable(true);
+           try {
+               if (result.failed() || result.get().getResponseCode() > 400 || CommonUtils.instance().gson.fromJson(result.get().getBodyString().get(), LoginResponse.class).getResults().size() <= 1) {
+                   CommonUtils.instance().showMessage("登录失败，账号密码有误", view, Toast.LENGTH_SHORT);
+                   return false;
+               }
+               return true;
+           }catch (Exception e){
+               Log.e("---", "---exception:" + e.getMessage());
+               CommonUtils.instance().showMessage("登录失败，账号密码有误", view, Toast.LENGTH_SHORT);
+               return false;
+           }
         });
         return weakReference.get();
     }

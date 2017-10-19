@@ -1,6 +1,7 @@
 package com.agera.hometools.login;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.agera.hometools.MainActivity;
 import com.agera.hometools.R;
 import com.google.android.agera.BaseObservable;
 import com.google.android.agera.Repositories;
@@ -72,6 +74,7 @@ public class LoginActivity extends Activity implements Updatable {
     @Override
     public void update() {
         Log.e("---", "----logon success");
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     class OnClickListenerObservable extends BaseObservable implements View.OnClickListener {

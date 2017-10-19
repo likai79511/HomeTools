@@ -42,7 +42,7 @@ public class Restful {
 
     //login
     public static HttpTask login(String name,String password,Callback cb){
-        return HttpTask.createHttpTask(new HttpCallable(HttpRequests.httpGetRequest(user_url+"?where={\"telephone\":"+name+",\"password\":"+password+"}")
+        return HttpTask.createHttpTask(new HttpCallable(HttpRequests.httpGetRequest(user_url+"?where={\"telephone\":\""+name+"\",\"password\":\""+password+"\"}")
         .headerField(applicationIdDesc,applicationId)
         .headerField(rest_keyDesc,rest_key)
         .headerField(content_type,format_jason)

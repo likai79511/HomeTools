@@ -87,7 +87,7 @@ public class RegisterActivity extends Activity implements Updatable {
     protected void onDestroy() {
         super.onDestroy();
         mRep.removeUpdatable(this);
-//        CommonUtils.instance().dismissSnackBar(mEt_tel,mEt_password,mEt_confirm_password,mBtn_register);
+
     }
 
     @Override

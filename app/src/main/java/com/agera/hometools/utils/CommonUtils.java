@@ -5,9 +5,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.agera.hometools.MyApp;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.Gson;
 
 /**
  * Created by mac on 2017/10/17.
@@ -16,6 +14,7 @@ import java.util.Map;
 public class CommonUtils {
 
     private static CommonUtils mUtils = null;
+    public Gson gson = new Gson();
     private CommonUtils(){
     }
 
@@ -28,27 +27,12 @@ public class CommonUtils {
         return mUtils;
     }
 
-    private Map<View,Snackbar> mSnackbars = new HashMap<>();
-    private Snackbar snackbar = null;
     public void showMessage(String msg,View view,int type){
         if (view == null) {
             Toast.makeText(MyApp.getInstance(),msg,type).show();
         } else {
-            if (mSnackbars.containsKey(view)){
-                mSnackbars.get(view).setText(msg).setDuration(type).show();
-            }else{
-                snackbar = Snackbar.make(view,msg,type);
-                mSnackbars.put(view,snackbar);
-                snackbar.show();
-            }
+           Snackbar.make(view,msg,type).show();
         }
     }
 
-    public void dismissSnackBar(View...views){
-        for (View v:views){
-            if (mSnackbars.containsKey(v)){
-                mSnackbars.get(v).dismiss();
-            }
-        }
-    }
 }
