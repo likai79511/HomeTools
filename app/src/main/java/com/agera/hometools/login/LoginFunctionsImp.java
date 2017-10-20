@@ -136,7 +136,7 @@ public class LoginFunctionsImp implements LoginFunctionInter {
     public Function<Pair<String, String>, Result<HttpResponse>> login(Callback cb, View view) {
         WeakReference<Function<Pair<String, String>, Result<HttpResponse>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<HttpResponse>>>(input -> {
             try {
-                CommonUtils.instance().showMessage("正在登陆...",view,Snackbar.LENGTH_SHORT);
+                CommonUtils.instance().showMessage("正在登陆..2.",view,Snackbar.LENGTH_SHORT);
                 Log.e("---","---正在登陆--");
                 HttpTask task = Restful.login(input.first, input.second, cb);
                 view.setClickable(false);
@@ -158,7 +158,7 @@ public class LoginFunctionsImp implements LoginFunctionInter {
             ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
             view.setClickable(true);
            try {
-               if (result.failed() || result.get().getResponseCode() > 400 || CommonUtils.instance().gson.fromJson(result.get().getBodyString().get(), LoginResponse.class).getResults().size() <= 1) {
+               if (result.failed() || result.get().getResponseCode() > 400 || CommonUtils.instance().gson.fromJson(result.get().getBodyString().get(), LoginResponse.class).getResults().size() < 1) {
                    CommonUtils.instance().showMessage("登录失败，账号密码有误", view, Toast.LENGTH_SHORT);
                    return false;
                }
