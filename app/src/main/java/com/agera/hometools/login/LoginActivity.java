@@ -11,6 +11,8 @@ import android.widget.EditText;
 
 import com.agera.hometools.MainActivity;
 import com.agera.hometools.R;
+import com.agera.hometools.utils.CommonUtils;
+import com.agera.hometools.utils.Constants;
 import com.google.android.agera.BaseObservable;
 import com.google.android.agera.Repositories;
 import com.google.android.agera.Repository;
@@ -74,6 +76,9 @@ public class LoginActivity extends Activity implements Updatable {
     @Override
     public void update() {
         Log.e("---", "----logon success");
+        //save profile to sd-card
+        CommonUtils.instance().saveData(Constants.USERNAME,tel);
+        CommonUtils.instance().saveData(Constants.PASSWORD,password);
         startActivity(new Intent(this, MainActivity.class));
     }
 

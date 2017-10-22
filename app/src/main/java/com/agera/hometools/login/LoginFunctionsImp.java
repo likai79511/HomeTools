@@ -16,6 +16,7 @@ import com.agera.hometools.core.TaskDriver;
 import com.agera.hometools.network.Callback;
 import com.agera.hometools.network.Restful;
 import com.agera.hometools.utils.CommonUtils;
+import com.agera.hometools.utils.Constants;
 import com.google.android.agera.Function;
 import com.google.android.agera.Predicate;
 import com.google.android.agera.Result;
@@ -160,12 +161,14 @@ public class LoginFunctionsImp implements LoginFunctionInter {
            try {
                if (result.failed() || result.get().getResponseCode() > 400 || CommonUtils.instance().gson.fromJson(result.get().getBodyString().get(), LoginResponse.class).getResults().size() < 1) {
                    CommonUtils.instance().showMessage("登录失败，账号密码有误", view, Toast.LENGTH_SHORT);
+                   CommonUtils.instance().clearData(Constants.USERNAME,Constants.PASSWORD);
                    return false;
                }
                return true;
            }catch (Exception e){
                Log.e("---", "---exception:" + e.getMessage());
                CommonUtils.instance().showMessage("登录失败，账号密码有误", view, Toast.LENGTH_SHORT);
+               CommonUtils.instance().clearData(Constants.USERNAME,Constants.PASSWORD);
                return false;
            }
         });
