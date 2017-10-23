@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'me.tatarka.retrolambda'
 android {
     compileSdkVersion 23
     buildToolsVersion '25.0.0'
@@ -12,7 +14,7 @@ android {
         versionName "1.0"
 
         jackOptions {
-            enabled true
+            enabled false
         }
 
     }
@@ -43,8 +45,8 @@ android {
     }
 
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -52,4 +54,8 @@ dependencies {
     compile project(':agera')
     compile files('libs/AMap_all.jar')
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
