@@ -33,7 +33,7 @@ public class CommonUtils {
 
     public void showMessage(String msg, View view, int type) {
         if (view == null) {
-            Toast.makeText(MyApp.getInstance(), msg, type).show();
+            Toast.makeText(MyApp.Companion.getInstance(), msg, type).show();
         } else {
             Snackbar.make(view, msg, type).show();
         }
@@ -48,7 +48,7 @@ public class CommonUtils {
      * @return
      */
     public <T> boolean saveData(String key, T value) {
-        SharedPreferences.Editor edit = MyApp.getInstance().getSharedPreferences(Constants.DATASTORE, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor edit = MyApp.Companion.getInstance().getSharedPreferences(Constants.DATASTORE, Context.MODE_PRIVATE).edit();
         if (value instanceof String) {
             return edit.putString(key, (String) value).commit();
         } else if (value instanceof Boolean) {
@@ -71,7 +71,7 @@ public class CommonUtils {
      * @return
      */
     public Object getData(String key, Object dValue) {
-        SharedPreferences sp = MyApp.getInstance().getSharedPreferences(Constants.DATASTORE, Context.MODE_PRIVATE);
+        SharedPreferences sp = MyApp.Companion.getInstance().getSharedPreferences(Constants.DATASTORE, Context.MODE_PRIVATE);
         if (dValue instanceof String) {
             return sp.getString(key, (String) dValue);
         } else if (dValue instanceof Boolean) {
@@ -89,7 +89,7 @@ public class CommonUtils {
     public Boolean clearData(String... keys) {
         try {
             for (String key : keys) {
-                MyApp.getInstance().getSharedPreferences(Constants.DATASTORE, Context.MODE_PRIVATE).edit().remove(key).commit();
+                MyApp.Companion.getInstance().getSharedPreferences(Constants.DATASTORE, Context.MODE_PRIVATE).edit().remove(key).commit();
             }
         } catch (Exception e) {
             Log.e("---", "---clearData encounter error:" + e.getMessage());

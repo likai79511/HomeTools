@@ -49,10 +49,10 @@ public class LoginFunctionsImp implements LoginFunctionInter {
     @Override
     public Predicate<String> checkTel(View view) {
         WeakReference<Predicate<String>> weakReference = new WeakReference<Predicate<String>>(s -> {
-            ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+            ((InputMethodManager) MyApp.Companion.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
             if (TextUtils.isEmpty(s) || s.length() != 11) {
                 if (view == null) {
-                    Toast.makeText(MyApp.getInstance(), "telephone lenth is wrong", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyApp.Companion.getInstance(), "telephone lenth is wrong", Toast.LENGTH_SHORT).show();
                 } else {
                     Snackbar.make(view, "telephone lenth is wrong", Snackbar.LENGTH_SHORT).show();
                 }
@@ -69,10 +69,10 @@ public class LoginFunctionsImp implements LoginFunctionInter {
     @Override
     public Predicate<String> checkPassword(View view) {
         WeakReference<Predicate<String>> weakReference = new WeakReference<Predicate<String>>(input -> {
-            ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+            ((InputMethodManager) MyApp.Companion.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
             if (TextUtils.isEmpty(input) || input.length() <= 6) {
                 if (view == null) {
-                    Toast.makeText(MyApp.getInstance(), "password length must is 6~11", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyApp.Companion.getInstance(), "password length must is 6~11", Toast.LENGTH_SHORT).show();
                 } else {
                     Snackbar.make(view, "password length must is 6~11", Snackbar.LENGTH_SHORT).show();
                 }
@@ -89,7 +89,7 @@ public class LoginFunctionsImp implements LoginFunctionInter {
     @Override
     public Predicate<String> checkConfirmPassword(final String password, View view) {
         WeakReference<Predicate<String>> weakReference = new WeakReference<Predicate<String>>(input -> {
-            ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+            ((InputMethodManager) MyApp.Companion.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
             if (password.equals(input))
                 return true;
             CommonUtils.instance().showMessage("两次密码必须一致",view,Toast.LENGTH_SHORT);
@@ -103,7 +103,7 @@ public class LoginFunctionsImp implements LoginFunctionInter {
     public Function<Pair<String, String>, Result<HttpResponse>> register(final Callback cb, View view) {
         WeakReference<Function<Pair<String, String>, Result<HttpResponse>>> weakReference = new WeakReference<Function<Pair<String, String>, Result<HttpResponse>>>(input -> {
             try {
-                ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+                ((InputMethodManager) MyApp.Companion.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
                 CommonUtils.instance().showMessage("正在注册...",view,Toast.LENGTH_LONG);
                 HttpTask task = Restful.register(input.first, input.second, cb);
                 view.setClickable(false);
@@ -156,12 +156,13 @@ public class LoginFunctionsImp implements LoginFunctionInter {
     @Override
     public Predicate<Result<HttpResponse>> checkLogin(View view) {
         WeakReference<Predicate<Result<HttpResponse>>> weakReference = new WeakReference<Predicate<Result<HttpResponse>>>(result->{
-            ((InputMethodManager) MyApp.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
+            ((InputMethodManager) MyApp.Companion.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), 0);
             view.setClickable(true);
            try {
                if (result.failed() || result.get().getResponseCode() > 400 || CommonUtils.instance().gson.fromJson(result.get().getBodyString().get(), LoginResponse.class).getResults().size() < 1) {
                    CommonUtils.instance().showMessage("登录失败，账号密码有误", view, Toast.LENGTH_SHORT);
                    CommonUtils.instance().clearData(Constants.USERNAME,Constants.PASSWORD);
+                   CommonUtils.instance().clearData(Constants.INSTANCE.USERNAME,Constants.PASSWORD);
                    return false;
                }
                return true;
