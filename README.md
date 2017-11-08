@@ -1,7 +1,7 @@
 # HomeTools
 
-Develop Driver: Agera framework
+Driver: Agera framework
 
-Develop Language: Kotlin
+Language: Kotlin
 
 
