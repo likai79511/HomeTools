@@ -3,6 +3,7 @@ package com.agera.hometools.login;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +42,10 @@ public class RegisterActivity extends Activity implements Updatable {
     }
 
     private void initEvents() {
+        String s = "123";
+        if (TextUtils.isEmpty(s) || s.length()<=10){
+
+        }
         mOb = new OnClickListenerObservable();
         mBtn_register.setOnClickListener(mOb);
         mRep = Repositories.repositoryWithInitialValue(Result.<HttpResponse>absent())

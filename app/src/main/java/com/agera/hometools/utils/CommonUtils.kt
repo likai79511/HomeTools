@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.agera.hometools.MyApp
+import com.google.gson.Gson
 
 /**
  * Created by mac on 2017/11/7.
@@ -15,24 +16,37 @@ class CommonUtils private constructor() {
     companion object {
         private var instance: CommonUtils = CommonUtils()
 
+        var gson: Gson = Gson()
+
+        var MESSAGE_DURATION_SHORT: Int = 1
+
+        var MESSAGE_DURATION_LONG: Int = 2
+
         fun instance(): CommonUtils {
             return instance
         }
     }
 
+    fun showShortMessage(payload: View, message: String) {
+        if (payload == null) {
+            Toast.makeText(MyApp.getInstance(), message, Toast.LENGTH_SHORT).show()
+        } else {
+            Snackbar.make(payload, message, Snackbar.LENGTH_SHORT).show()
+        }
+    }
 
-    fun showMessage(payload:View,message:String,type:Int){
-        if (payload==null){
-            Toast.makeText(MyApp.getInstance(),message,type).show()
-        }else{
-            Snackbar.make(payload,message,type).show()
+    fun showLongMessage(payload: View, message: String) {
+        if (payload == null) {
+            Toast.makeText(MyApp.getInstance(), message, Toast.LENGTH_LONG).show()
+        } else {
+            Snackbar.make(payload, message, Snackbar.LENGTH_LONG).show()
         }
     }
 
     /**
      * Save data to SD card
      */
-    fun <T> saveData(key:String,value:T):Boolean{
+    fun <T> saveData(key: String, value: T): Boolean {
         val edit = MyApp.getInstance().getSharedPreferences(Constants.DATASTORE, Context.MODE_PRIVATE).edit()
         if (value is String) {
             return edit.putString(key, value).commit()

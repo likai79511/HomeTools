@@ -7,10 +7,11 @@ import com.google.android.agera.net.HttpResponse
 import java.util.concurrent.Callable
 
 /**
- * Created by Administrator on 2017/11/2 0002.
+ * Created by Agera on 2017/11/2 0002.
  */
-class HttpCallable(val req: HttpRequest) : Callable<Result<HttpResponse>> {
+class HttpCallable(req: HttpRequest) : Callable<Result<HttpResponse>> {
     var request: HttpRequest? = null
+
     init {
         request = req
     }
@@ -18,6 +19,6 @@ class HttpCallable(val req: HttpRequest) : Callable<Result<HttpResponse>> {
     override fun call(): Result<HttpResponse>? {
         if (request == null)
             return Result.failure(Throwable("request is null"))
-        return request?.let { HttpFunctions.httpFunction().apply(it) }
+        return HttpFunctions.httpFunction().apply(request!!)
     }
 }
