@@ -2,6 +2,7 @@ package com.agera.hometools.utils
 
 import android.content.Context
 import android.support.design.widget.Snackbar
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -12,16 +13,12 @@ import com.google.gson.Gson
  * Created by mac on 2017/11/7.
  */
 class CommonUtils private constructor() {
+    var gson: Gson = Gson()
+    var MESSAGE_DURATION_SHORT: Int = 1
+    var MESSAGE_DURATION_LONG: Int = 2
 
     companion object {
         private var instance: CommonUtils = CommonUtils()
-
-        var gson: Gson = Gson()
-
-        var MESSAGE_DURATION_SHORT: Int = 1
-
-        var MESSAGE_DURATION_LONG: Int = 2
-
         fun instance(): CommonUtils {
             return instance
         }
@@ -100,4 +97,9 @@ class CommonUtils private constructor() {
     }
 
 
+    fun checkTel(tel: String): Boolean = !TextUtils.isEmpty(tel) && tel.length == 11
+
+    fun checkPassword(password: String): Boolean = !TextUtils.isEmpty(password) && password.length >= 6
+
+    fun checkConfirmPassword(pass1:String,pass2:String):Boolean = !TextUtils.isEmpty(pass1) && !TextUtils.isEmpty(pass2) && pass1.equals(pass2)
 }

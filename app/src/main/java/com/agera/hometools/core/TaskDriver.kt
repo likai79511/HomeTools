@@ -22,12 +22,10 @@ class TaskDriver private constructor() {
 
     companion object {
         private val instance: TaskDriver = TaskDriver()
-        fun instance(): TaskDriver {
-            return instance
-        }
+        fun instance(): TaskDriver = instance
     }
 
-    fun execute(task: FutureTask<Any>) {
+    fun execute(task: HttpTask) {
         mCore.submit(task)
     }
 

@@ -2,7 +2,6 @@ package com.agera.hometools.login
 
 import android.util.Pair
 import android.view.View
-import com.agera.hometools.network.Callback
 import com.google.android.agera.Function
 import com.google.android.agera.Predicate
 import com.google.android.agera.Result

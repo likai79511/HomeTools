@@ -45,7 +45,9 @@ android {
 dependencies {
     compile project(':agera')
     compile files('libs/AMap_all.jar')
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
 

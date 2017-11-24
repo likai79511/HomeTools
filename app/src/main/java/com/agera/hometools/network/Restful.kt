@@ -28,8 +28,8 @@ class Restful {
         private val TELEPHONE = "telephone"
         private val PASSWORD = "password"
 
-        fun register(name: String, password: String, cb: Callback): HttpTask {
-            return HttpTask.createHttpTask(HttpCallable(HttpRequests.httpPostRequest(user_url)
+        fun register(name: String, password: String): HttpTask {
+            return HttpTask(HttpCallable(HttpRequests.httpPostRequest(user_url)
                     .body(gson.toJson(AppendMap().put(TELEPHONE, name)
                             .put(PASSWORD, password)
                             .compile()).toByteArray())
@@ -38,18 +38,18 @@ class Restful {
                     .headerField(content_type, format_jason)
                     .connectTimeoutMs(timeout)
                     .readTimeoutMs(timeout)
-                    .compile()), cb)
+                    .compile()))
         }
 
         //login
-        fun login(name: String, password: String, cb: Callback): HttpTask {
-            return HttpTask.createHttpTask(HttpCallable(HttpRequests.httpGetRequest(user_url + "?where={\"telephone\":\"" + name + "\",\"password\":\"" + password + "\"}")
+        fun login(name: String, password: String): HttpTask {
+            return HttpTask(HttpCallable(HttpRequests.httpGetRequest("$user_url?where={\"telephone\":\"$name\",\"password\":\"$password\"}")
                     .headerField(applicationIdDesc, applicationId)
                     .headerField(rest_keyDesc, rest_key)
                     .headerField(content_type, format_jason)
                     .connectTimeoutMs(timeout)
                     .readTimeoutMs(timeout)
-                    .compile()), cb)
+                    .compile()))
         }
     }
 }

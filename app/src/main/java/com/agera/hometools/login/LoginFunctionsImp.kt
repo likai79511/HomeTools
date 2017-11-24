@@ -9,7 +9,6 @@ import com.agera.hometools.MyApp
 import com.agera.hometools.bean.LoginResponse
 import com.agera.hometools.core.HttpTask
 import com.agera.hometools.core.TaskDriver
-import com.agera.hometools.network.Callback
 import com.agera.hometools.network.Restful
 import com.agera.hometools.utils.CommonUtils
 import com.agera.hometools.utils.Constants

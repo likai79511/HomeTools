@@ -8,7 +8,7 @@ import android.app.Application
 class MyApp private constructor() : Application() {
 
     companion object {
-        private var app: MyApp = null!!
+        private var app: MyApp  = null
 
         public fun getInstance(): MyApp {
             synchronized(this) {
