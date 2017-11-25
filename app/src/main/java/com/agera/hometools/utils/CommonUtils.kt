@@ -14,8 +14,6 @@ import com.google.gson.Gson
  */
 class CommonUtils private constructor() {
     var gson: Gson = Gson()
-    var MESSAGE_DURATION_SHORT: Int = 1
-    var MESSAGE_DURATION_LONG: Int = 2
 
     companion object {
         private var instance: CommonUtils = CommonUtils()
