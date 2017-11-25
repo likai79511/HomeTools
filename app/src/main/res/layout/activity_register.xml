@@ -20,6 +20,7 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/circle_rectangle_top"
         android:hint="telephone"
+        android:inputType="number"
         android:maxLength="11"
         android:textColor="#000"
         android:textSize="14sp" />
@@ -31,6 +32,7 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/rectangle"
         android:hint="password"
+        android:inputType="number"
         android:maxLength="11"
         android:textColor="#000"
         android:textSize="14sp" />
@@ -42,32 +44,18 @@
         android:layout_centerHorizontal="true"
         android:background="@drawable/circle_rectangle_bottom"
         android:hint="confirm password"
+        android:inputType="number"
         android:maxLength="11"
         android:textColor="#000"
         android:textSize="14sp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:orientation="horizontal">
+        android:background="@drawable/circle_rectangle"
+        android:text="register"
+        android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/btn_register"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/circle_rectangle"
-            android:text="register"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:background="@drawable/circle_rectangle"
-            android:text="Login"
-            android:textSize="16sp" />
-    </LinearLayout>
 </LinearLayout>

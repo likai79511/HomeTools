@@ -1,80 +1,101 @@
 package com.agera.hometools.login
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.TextView
+import com.agera.hometools.MainActivity
+import com.agera.hometools.MyApp
 import com.agera.hometools.R
-import com.google.android.agera.*
-import com.google.android.agera.net.HttpResponse
-import java.util.concurrent.atomic.AtomicBoolean
+import com.agera.hometools.utils.CommonUtils
+import com.agera.hometools.utils.Constants
+import com.google.android.agera.Repositories
+import com.google.android.agera.Repository
+import com.google.android.agera.Result
+import com.google.android.agera.Updatable
 
 /**
- * Created by mac on 2017/10/23.
+ * Created by 43992639 on 2017/11/24.
  */
 class LoginActivity : Activity(), Updatable {
 
-
     var mEt_tel: EditText? = null
     var mEt_password: EditText? = null
-    var mBtn_login: Button? = null
-    var mOb: OnClickListenerObservable? = null
-    var mRep: Repository<Result<HttpResponse>>? = null
-    var tel: String? = null
-    var password: String? = null
-    val activeOnce = AtomicBoolean(false)
+    var activeOnce: Result<String> = Result.failure()
+    var tel: String = ""
+    var password: String = ""
+    var mRep: Repository<Result<String>>? = null
+    var loginObservable: ClickObservable? = null
+    var tv_register: TextView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initView()
+        setContentView(R.layout.activity_login)
+
+        initViews()
         initEvents()
     }
 
+    private fun initEvents() {
+        loginObservable = ClickObservable()
+        findViewById(R.id.btn_Login).setOnClickListener { view ->
+            activeOnce = Result.success("start repository")
+            (MyApp.instance().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).hideSoftInputFromWindow(view.windowToken, 0)
+            loginObservable!!.onClick(view)
+        }
+        tv_register?.setOnClickListener {
+            startActivity(Intent(this, RegisterActivity::class.java))
+        }
+        mRep = Repositories.repositoryWithInitialValue(Result.absent<String>())
+                .observe(loginObservable)
+                .onUpdatesPerLoop()
+                .attemptGetFrom { activeOnce }
+                .orSkip()
+                .attemptGetFrom { LoginImp.instance().checkTel(mEt_tel) }
+                .orSkip()
+                .attemptTransform {
+                    tel = it
+                    LoginImp.instance().checkPassword(mEt_password)
+                }
+                .orSkip()
+                .thenTransform {
+                    password = it
+                    CommonUtils.instance().showShortMessage(mEt_tel!!, "正在登录...")
+                    LoginImp.instance().login(tel, password)
+                }
+                .notifyIf { _, v2 ->
+                    if (v2.failed())
+                        CommonUtils.instance().showShortMessage(mEt_tel!!, "登陆失败...")
+                    v2.succeeded()
+                }
+                .compile()
 
-    fun initView() {
-        mEt_tel = R.id.et_tel as EditText
-        mEt_password = R.id.et_password as EditText
-        mBtn_login = R.id.btn_Login as Button
+        mRep?.let { it.addUpdatable(this) }
     }
 
-    fun initEvents() {
+    private fun initViews() {
+        mEt_tel = findViewById(R.id.et_tel) as EditText
+        mEt_password = findViewById(R.id.et_password) as EditText
+        tv_register = findViewById(R.id.tv_register) as TextView
+        tv_register!!.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+    }
 
-        mOb = OnClickListenerObservable()
-        mBtn_login?.setOnClickListener { mOb }
-
-//        return tel = if (mEt_tel == null) null else if (mEt_tel.getText() == null) null else mEt_tel.getText().toString().trim()
-        Supplier { }
-        Repositories.repositoryWithInitialValue(Result.absent<HttpResponse>())
-                .observe()
-                .onUpdatesPerLoop()
-                .check { o -> activeOnce.getAndSet(true) }
-                .orSkip()
-                .getFrom{ tel = "123" }    //mEt_tel?.text?.toString()?.trim()
-
-//                .check{ s1 -> LoginFunctionsImp.instance().checkTel(mEt_tel).apply(s1)}
-
-
-
-        /*mRep = Repositories.repositoryWithInitialValue(Result.absent<HttpResponse>())
-                .check { s -> LoginFunctionsImp.instance().checkTel(mEt_tel).apply(s) }
-                .orSkip()
-                .getFrom<String> { password = if (mEt_password == null) null else if (mEt_password.getText() == null) null else mEt_password.getText().toString().trim { it <= ' ' } }
-                .check { s -> LoginFunctionsImp.instance().checkPassword(mEt_password).apply(s) }
-                .orSkip()
-                .thenTransform { s -> LoginFunctionsImp.instance().login(null, mBtn_login).apply(Pair.create<String, String>(tel, password)) }
-                .notifyIf { response1, response2 -> LoginFunctionsImp.instance().checkLogin(mBtn_login).apply(response2) }
-                .compile()
-        activeOnce.set(false)
-        mRep.addUpdatable(this)*/
+    override fun onDestroy() {
+        super.onDestroy()
+        mRep?.let {
+            it.removeUpdatable(this)
+        }
     }
 
     override fun update() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        CommonUtils.instance().saveData(Constants.USERNAME, tel)
+        CommonUtils.instance().saveData(Constants.PASSWORD, password)
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 
-    internal inner class OnClickListenerObservable : BaseObservable(), View.OnClickListener {
-        override fun onClick(v: View) {
-            dispatchUpdate()
-        }
-    }
 }

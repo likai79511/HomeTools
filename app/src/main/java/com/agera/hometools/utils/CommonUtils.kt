@@ -26,7 +26,7 @@ class CommonUtils private constructor() {
 
     fun showShortMessage(payload: View, message: String) {
         if (payload == null) {
-            Toast.makeText(MyApp.getInstance(), message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(MyApp.instance(), message, Toast.LENGTH_SHORT).show()
         } else {
             Snackbar.make(payload, message, Snackbar.LENGTH_SHORT).show()
         }
@@ -34,7 +34,7 @@ class CommonUtils private constructor() {
 
     fun showLongMessage(payload: View, message: String) {
         if (payload == null) {
-            Toast.makeText(MyApp.getInstance(), message, Toast.LENGTH_LONG).show()
+            Toast.makeText(MyApp.instance(), message, Toast.LENGTH_LONG).show()
         } else {
             Snackbar.make(payload, message, Snackbar.LENGTH_LONG).show()
         }
@@ -44,7 +44,7 @@ class CommonUtils private constructor() {
      * Save data to SD card
      */
     fun <T> saveData(key: String, value: T): Boolean {
-        val edit = MyApp.getInstance().getSharedPreferences(Constants.DATASTORE, Context.MODE_PRIVATE).edit()
+        val edit = MyApp.instance().getSharedPreferences(Constants.DATASTORE, Context.MODE_PRIVATE).edit()
         if (value is String) {
             return edit.putString(key, value).commit()
         } else if (value is Boolean) {
@@ -69,7 +69,7 @@ class CommonUtils private constructor() {
      * @return
      */
     fun getData(key: String, dValue: Any): Any? {
-        val sp = MyApp.getInstance().getSharedPreferences(Constants.DATASTORE, Context.MODE_PRIVATE)
+        val sp = MyApp.instance().getSharedPreferences(Constants.DATASTORE, Context.MODE_PRIVATE)
         if (dValue is String) {
             return sp.getString(key, dValue)
         } else if (dValue is Boolean) {
@@ -87,7 +87,7 @@ class CommonUtils private constructor() {
     fun clearData(vararg keys: String): Boolean? {
         try {
             for (key in keys) {
-                MyApp.getInstance().getSharedPreferences(Constants.DATASTORE, Context.MODE_PRIVATE).edit().remove(key).commit()
+                MyApp.instance().getSharedPreferences(Constants.DATASTORE, Context.MODE_PRIVATE).edit().remove(key).commit()
             }
         } catch (e: Exception) {
             Log.e("---", "---clearData encounter error:" + e.message)

@@ -8,10 +8,10 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:text="Login"
         android:textColor="#000"
-        android:textSize="18sp"
-        android:layout_marginTop="30dp"/>
+        android:textSize="18sp" />
 
     <EditText
         android:id="@+id/et_tel"
@@ -40,8 +40,18 @@
         android:id="@+id/btn_Login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:background="@drawable/circle_rectangle"
         android:text="Login"
-        android:layout_marginTop="20dp"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="注册新账号"
+        android:textColor="#000"
+        android:textSize="14sp" />
+
 </LinearLayout>
