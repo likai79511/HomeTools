@@ -30,7 +30,7 @@ class CommonUtils private constructor() {
         }
     }
 
-    fun showLongMessage(payload: View, message: String) {
+    fun showLongMessage(payload: View?, message: String) {
         if (payload == null) {
             Toast.makeText(MyApp.instance(), message, Toast.LENGTH_LONG).show()
         } else {

@@ -41,7 +41,6 @@ class LaunchActivity : Activity() {
 
     private fun startMainActivity(flag: Boolean) {
         var duration = System.currentTimeMillis() - startTime
-        Log.e("---", "--duration:" + duration)
         Handler().postDelayed({
             startActivity(Intent(this, if (flag) MainActivity::class.java else LoginActivity::class.java))
             finish()

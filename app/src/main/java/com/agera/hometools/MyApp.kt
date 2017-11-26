@@ -1,6 +1,7 @@
 package com.agera.hometools
 
 import android.app.Application
+import cn.jpush.android.api.JPushInterface
 
 /**
  * Created by mac on 2017/10/24.
@@ -16,5 +17,9 @@ class MyApp: Application() {
     override fun onCreate() {
         super.onCreate()
         app = this
+
+        //init push
+        JPushInterface.setDebugMode(true)
+        JPushInterface.init(this)
     }
 }

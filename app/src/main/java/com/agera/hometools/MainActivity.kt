@@ -30,7 +30,6 @@ class MainActivity:Activity(), View.OnClickListener{
             R.id.btn_family -> {}
             R.id.btn_kd -> {}
             R.id.btn_setting -> {}
-            R.id.btn_setting -> {}
         }
     }
 }
