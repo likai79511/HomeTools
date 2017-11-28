@@ -11,12 +11,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!--JPUSH-->
-    <permission
-        android:name="com.agera.hometools.permission.JPUSH_MESSAGE"
-        android:protectionLevel="signature" />
-    <uses-permission android:name="com.agera.hometools.permission.JPUSH_MESSAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".MyApp"
@@ -38,72 +32,12 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".login.LoginActivity"
-            android:label="@string/title_activity_login"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".login.LoginActivity" />
+        <activity android:name=".locate.LocateActivity"/>
+        <activity android:name=".login.RegisterActivity"/>
+        <activity android:name=".MainActivity"/>
 
-        <!-- Required SDK 核心功能-->
-        <!-- 可配置android:process参数将PushService放在其他进程中 -->
-        <service
-            android:name="cn.jpush.android.service.PushService"
-            android:enabled="true"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="cn.jpush.android.intent.REGISTER" />
-                <action android:name="cn.jpush.android.intent.REPORT" />
-                <action android:name="cn.jpush.android.intent.PushService" />
-                <action android:name="cn.jpush.android.intent.PUSH_TIME" />
-            </intent-filter>
-        </service>
 
-        <receiver android:name="cn.jpush.android.service.AlarmReceiver" />
-
-        <receiver
-            android:name=".push.PushReceiver"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="cn.jpush.android.intent.REGISTRATION" />
-                <action android:name="cn.jpush.android.intent.MESSAGE_RECEIVED" />
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED" />
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_OPENED" />
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_CLICK_ACTION" />
-                <action android:name="cn.jpush.android.intent.CONNECTION" />
-                <category android:name="com.agera.hometools" />
-            </intent-filter>
-        </receiver>
-       <!-- <receiver
-            android:name=".push.PushReceiver"
-            android:enabled="true">
-            <intent-filter android:priority="1000">
-                <action android:name="cn.jpush.android.intent.NOTIFICATION_RECEIVED_PROXY" />
-                <category android:name="com.agera.hometools" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.USER_PRESENT" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>-->
-        <meta-data
-            android:name="JPUSH_APPKEY"
-            android:value="e7e2f3ad0b1c1886a1da21ad" />
-
-        <provider
-            android:name="cn.jpush.android.service.DataProvider"
-            android:authorities="com.agera.hometools.DataProvider"
-            android:exported="true" />
-
-        <activity
-            android:name="cn.jpush.android.ui.PushActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="cn.jpush.android.ui.PushActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="com.agera.hometools" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

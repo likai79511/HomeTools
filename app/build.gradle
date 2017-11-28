@@ -45,8 +45,6 @@ android {
 dependencies {
     compile project(':agera')
     compile files('libs/AMap_all.jar')
-    compile files('libs/jcore-android-1.1.8.jar')
-    compile files('libs/jpush-android-3.1.0.jar')
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 repositories {
