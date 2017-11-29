@@ -333,7 +333,7 @@ class AVNotificationManager {
     return defaultPushCallback.size();
   }
 
-  @TargetApi(Build.VERSION_CODES.O)
+  @TargetApi(26)
   private void sendNotification(String from, String msg, Intent resultIntent) {
     String clsName = getDefaultPushCallback(from);
     if (AVUtils.isBlankString(clsName)) {
@@ -365,8 +365,7 @@ class AVNotificationManager {
             .setContentTitle(getTitle(msg))
             .setAutoCancel(true).setContentIntent(contentIntent)
             .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
-            .setContentText(getText(msg))
-            .setChannelId(PushService.DefaultChannelId);
+            .setContentText(getText(msg));
 
         notification = builder.build();
       }

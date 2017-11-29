@@ -608,7 +608,7 @@ public class PushService extends Service {
    * @param context   context
    * @param channelId default channel id.
    */
-  @TargetApi(Build.VERSION_CODES.O)
+  @TargetApi(25)
   public static void setDefaultChannelId(Context context, String channelId) {
     DefaultChannelId = channelId;
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.N_MR1) {
@@ -621,9 +621,6 @@ public class PushService extends Service {
       CharSequence name = context.getPackageName();
       String description = "PushNotification";
       int importance = NotificationManager.IMPORTANCE_DEFAULT;
-      android.app.NotificationChannel channel = new android.app.NotificationChannel(channelId, name, importance);
-      channel.setDescription(description);
-      notificationManager.createNotificationChannel(channel);
     } catch (Exception ex) {
       LogUtil.log.w("failed to create NotificationChannel, then perhaps PushNotification doesn't work well on Android O and newer version.");
     }
