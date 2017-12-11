@@ -1,1 +1,1 @@
-include ':app', ':agera','avoscloud-sdk','avoscloud-push'
+include ':app', ':agera'

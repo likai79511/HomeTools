@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.getkeepsafe.dexcount'
 android {
     compileSdkVersion 25
     buildToolsVersion '25.0.2'
@@ -11,7 +12,6 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-
 
     }
     buildTypes {
@@ -47,7 +47,6 @@ dependencies {
     compile files('libs/AMap_all.jar')
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
-    compile project(':avoscloud-push')
 }
 repositories {
     jcenter()
