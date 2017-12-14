@@ -53,7 +53,7 @@ class LoginImp private constructor() : LoginInter {
     override fun login(tel: String, password: String): Result<String> {
         var task = Restful.instance().login(tel, password)
         TaskDriver.instance().execute(task)
-        var result: Result<String>? = null
+        var result: Result<String>? = Result.failure()
         task.get()
                 .ifFailedSendTo { Result.failure<String>(it) }
                 .ifSucceededSendTo {

@@ -52,11 +52,13 @@ class LocateActivity : Activity() {
     override fun onResume() {
         super.onResume()
         mMap!!.onResume()
+
     }
 
     override fun onPause() {
         super.onPause()
         mMap!!.onPause()
+        Log.e("---","---map onPause")
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {

@@ -7,9 +7,9 @@ import android.os.Handler
 import android.text.TextUtils
 import com.agera.hometools.login.LoginActivity
 import com.agera.hometools.login.LoginImp
+import com.agera.hometools.push.PushUtils
 import com.agera.hometools.utils.CommonUtils
 import com.agera.hometools.utils.Constants
-import com.agera.hometools.push.PushUtils
 
 /**
  * Created by mac on 2017/10/23.
@@ -27,7 +27,7 @@ class LaunchActivity : Activity() {
         var password: String = CommonUtils.instance().getData(Constants.PASSWORD, "") as String
 
         if (!TextUtils.isEmpty(tel) && !TextUtils.isEmpty(password)) {
-            LoginImp.instance().login(tel, password)
+            var result = LoginImp.instance().login(tel, password)
                     .ifSucceededSendTo {
                         //set push account
                         PushUtils.instance().setPushAccount(this, tel)

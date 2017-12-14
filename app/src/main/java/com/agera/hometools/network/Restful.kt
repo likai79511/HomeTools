@@ -1,8 +1,13 @@
 package com.agera.hometools.network
 
+import android.util.Log
 import com.agera.hometools.core.HttpCallable
 import com.agera.hometools.core.HttpTask
+import com.agera.hometools.core.TaskDriver
+import com.agera.hometools.push.PushMessage
 import com.agera.hometools.utils.AppendMap
+import com.agera.hometools.utils.CommonUtils
+import com.agera.hometools.utils.PushConstants
 import com.google.android.agera.net.HttpRequests
 import com.google.gson.Gson
 
@@ -10,11 +15,12 @@ import com.google.gson.Gson
  * Created by Agera on 2017/11/8.
  */
 class Restful private constructor() : RestfuInter {
-
-
     //regist
     companion object {
         private val user_url = "https://api.bmob.cn/1/classes/user"
+        private val push_url = "https://bjapi.push.jiguang.cn/v3/push"
+
+
         private val timeout = 101000
 
         private val applicationIdDesc = "X-Bmob-Application-Id"
@@ -29,6 +35,7 @@ class Restful private constructor() : RestfuInter {
 
         private val TELEPHONE = "telephone"
         private val PASSWORD = "password"
+        private val AUTHORIZATION = "Authorization"
 
         private var restful = Restful()
 
@@ -62,4 +69,18 @@ class Restful private constructor() : RestfuInter {
                 .compile()))
     }
 
+    override fun sendMessage(msg: PushMessage) {
+        var msgStr = CommonUtils.instance().gson.toJson(msg)
+        Log.e("---", "--msg:$msgStr")
+
+        var task = HttpTask(HttpCallable(HttpRequests.httpPostRequest(push_url)
+                .body(msgStr.toByteArray())
+                .headerField(content_type, format_jason)
+                .headerField(AUTHORIZATION, PushConstants.AUTHORIZATION)
+                .connectTimeoutMs(timeout)
+                .readTimeoutMs(timeout)
+                .compile()))
+
+        TaskDriver.instance().mCore.submit(task)
+    }
 }

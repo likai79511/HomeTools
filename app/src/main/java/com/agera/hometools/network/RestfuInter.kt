@@ -11,5 +11,5 @@ interface RestfuInter {
 
     fun login(name: String, password: String): HttpTask
 
-    fun sendMessage(msg:PushMessage.JPUSHMessage)
+    fun sendMessage(msg:PushMessage):Unit
 }

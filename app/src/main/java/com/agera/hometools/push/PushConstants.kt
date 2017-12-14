@@ -7,7 +7,7 @@ class PushConstants {
     companion object {
         //Push
         //Message Type
-        var AUTHORIZATION = "YXBwS2V5OmMzZjdhNzYyZjhhZTlmYzIyNWVmMDlmZg=="
+        var AUTHORIZATION = "Basic ZTdlMmYzYWQwYjFjMTg4NmExZGEyMWFkOmMzZjdhNzYyZjhhZTlmYzIyNWVmMDlmZg=="
         val MESSAGE_LOCATION = 1
 
     }

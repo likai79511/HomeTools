@@ -5,6 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.agera.hometools.locate.LocateActivity
+import com.agera.hometools.network.Restful
+import com.agera.hometools.push.CustomMessage
+import com.agera.hometools.push.MessageFactory
+import com.agera.hometools.utils.CommonUtils
+import com.agera.hometools.utils.Constants
+import com.agera.hometools.utils.PushConstants
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
@@ -22,6 +28,9 @@ class MainActivity:Activity(), View.OnClickListener{
         btn_kd.setOnClickListener(this)
         btn_setting.setOnClickListener(this)
 
+
+
+
     }
 
     override fun onClick(v: View?) {
@@ -29,7 +38,12 @@ class MainActivity:Activity(), View.OnClickListener{
             R.id.btn_locate -> startActivity(Intent(this, LocateActivity::class.java))
             R.id.btn_family -> {}
             R.id.btn_kd -> {}
-            R.id.btn_setting -> {}
+            R.id.btn_setting -> {
+                CommonUtils.instance().apply {
+                    var msg = MessageFactory.instance().createMessage(CustomMessage(PushConstants.MESSAGE_LOCATION,"18291427145",getData(Constants.USERNAME," ") as String))
+                    Restful.instance().sendMessage(msg)
+                }
+            }
         }
     }
 }

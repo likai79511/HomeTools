@@ -11,12 +11,7 @@ class PushMessage{
 
     var message: JPUSHMessage?=null
 
-    class JPUSHMessage constructor(var msg:String){
-        var msg_content:String ?=null
-        init {
-            msg_content = msg
-        }
-    }
+    data class JPUSHMessage(var msg_content:String)
 
 
 }
