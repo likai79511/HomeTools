@@ -1,6 +1,5 @@
 package com.agera.hometools.login
 
-import android.util.Log
 import android.widget.EditText
 import com.agera.hometools.bean.LoginResponse
 import com.agera.hometools.core.TaskDriver
@@ -52,7 +51,7 @@ class LoginImp private constructor() : LoginInter {
     }
 
     override fun login(tel: String, password: String): Result<String> {
-        var task = Restful.login(tel, password)
+        var task = Restful.instance().login(tel, password)
         TaskDriver.instance().execute(task)
         var result: Result<String>? = null
         task.get()
@@ -69,7 +68,7 @@ class LoginImp private constructor() : LoginInter {
     }
 
     override fun register(tel: String, password: String): Result<String> {
-        var task = Restful.register(tel, password)
+        var task = Restful.instance().register(tel, password)
         TaskDriver.instance().execute(task)
         var result: Result<String>? = Result.failure()
         task.get()

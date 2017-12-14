@@ -13,6 +13,12 @@ android {
         versionCode 1
         versionName "1.0"
 
+
+        manifestPlaceholders = [
+                XG_ACCESS_ID : "2100272896",
+                XG_ACCESS_KEY: "A63L26RK7KNV",
+        ]
+
     }
     buildTypes {
         release {
@@ -46,7 +52,9 @@ dependencies {
     compile project(':agera')
     compile files('libs/AMap_all.jar')
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-
+    compile files('libs/jcore-android-1.1.8.jar')
+    compile files('libs/jpush-android-3.1.0.jar')
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 }
 repositories {
     jcenter()

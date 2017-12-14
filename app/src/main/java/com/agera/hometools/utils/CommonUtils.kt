@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.agera.hometools.MyApp
+import com.agera.hometools.core.TaskDriver
 import com.google.gson.Gson
 
 /**
@@ -23,18 +24,22 @@ class CommonUtils private constructor() {
     }
 
     fun showShortMessage(payload: View, message: String) {
-        if (payload == null) {
-            Toast.makeText(MyApp.instance(), message, Toast.LENGTH_SHORT).show()
-        } else {
-            Snackbar.make(payload, message, Snackbar.LENGTH_SHORT).show()
+        TaskDriver.instance().mainHandler.post {
+            if (payload == null) {
+                Toast.makeText(MyApp.instance(), message, Toast.LENGTH_SHORT).show()
+            } else {
+                Snackbar.make(payload, message, Snackbar.LENGTH_SHORT).show()
+            }
         }
     }
 
     fun showLongMessage(payload: View?, message: String) {
-        if (payload == null) {
-            Toast.makeText(MyApp.instance(), message, Toast.LENGTH_LONG).show()
-        } else {
-            Snackbar.make(payload, message, Snackbar.LENGTH_LONG).show()
+        TaskDriver.instance().mainHandler.post {
+            if (payload == null) {
+                Toast.makeText(MyApp.instance(), message, Toast.LENGTH_LONG).show()
+            } else {
+                Snackbar.make(payload, message, Snackbar.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -95,9 +100,16 @@ class CommonUtils private constructor() {
     }
 
 
+    fun clearAccount() {
+        //clear account
+        clearData(Constants.USERNAME)
+        clearData(Constants.PASSWORD)
+    }
+
+
     fun checkTel(tel: String): Boolean = !TextUtils.isEmpty(tel) && tel.length == 11
 
     fun checkPassword(password: String): Boolean = !TextUtils.isEmpty(password) && password.length >= 6
 
-    fun checkConfirmPassword(pass1:String,pass2:String):Boolean = !TextUtils.isEmpty(pass1) && !TextUtils.isEmpty(pass2) && pass1.equals(pass2)
+    fun checkConfirmPassword(pass1: String, pass2: String): Boolean = !TextUtils.isEmpty(pass1) && !TextUtils.isEmpty(pass2) && pass1.equals(pass2)
 }

@@ -9,7 +9,9 @@ import com.google.gson.Gson
 /**
  * Created by Agera on 2017/11/8.
  */
-class Restful {
+class Restful private constructor() : RestfuInter {
+
+
     //regist
     companion object {
         private val user_url = "https://api.bmob.cn/1/classes/user"
@@ -28,28 +30,36 @@ class Restful {
         private val TELEPHONE = "telephone"
         private val PASSWORD = "password"
 
-        fun register(name: String, password: String): HttpTask {
-            return HttpTask(HttpCallable(HttpRequests.httpPostRequest(user_url)
-                    .body(gson.toJson(AppendMap().put(TELEPHONE, name)
-                            .put(PASSWORD, password)
-                            .compile()).toByteArray())
-                    .headerField(applicationIdDesc, applicationId)
-                    .headerField(rest_keyDesc, rest_key)
-                    .headerField(content_type, format_jason)
-                    .connectTimeoutMs(timeout)
-                    .readTimeoutMs(timeout)
-                    .compile()))
-        }
+        private var restful = Restful()
 
-        //login
-        fun login(name: String, password: String): HttpTask {
-            return HttpTask(HttpCallable(HttpRequests.httpGetRequest("$user_url?where={\"telephone\":\"$name\",\"password\":\"$password\"}")
-                    .headerField(applicationIdDesc, applicationId)
-                    .headerField(rest_keyDesc, rest_key)
-                    .headerField(content_type, format_jason)
-                    .connectTimeoutMs(timeout)
-                    .readTimeoutMs(timeout)
-                    .compile()))
-        }
+        fun instance(): Restful = restful
+
+
     }
+
+    override fun register(name: String, password: String): HttpTask {
+        return HttpTask(HttpCallable(HttpRequests.httpPostRequest(user_url)
+                .body(gson.toJson(AppendMap<String>().put(TELEPHONE, name)
+                        .put(PASSWORD, password)
+                        .compile()).toByteArray())
+                .headerField(applicationIdDesc, applicationId)
+                .headerField(rest_keyDesc, rest_key)
+                .headerField(content_type, format_jason)
+                .connectTimeoutMs(timeout)
+                .readTimeoutMs(timeout)
+                .compile()))
+    }
+
+    //login
+
+    override fun login(name: String, password: String): HttpTask {
+        return HttpTask(HttpCallable(HttpRequests.httpGetRequest("$user_url?where={\"telephone\":\"$name\",\"password\":\"$password\"}")
+                .headerField(applicationIdDesc, applicationId)
+                .headerField(rest_keyDesc, rest_key)
+                .headerField(content_type, format_jason)
+                .connectTimeoutMs(timeout)
+                .readTimeoutMs(timeout)
+                .compile()))
+    }
+
 }

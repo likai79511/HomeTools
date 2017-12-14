@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
-import android.util.Log
 import com.agera.hometools.login.LoginActivity
 import com.agera.hometools.login.LoginImp
 import com.agera.hometools.utils.CommonUtils
 import com.agera.hometools.utils.Constants
+import com.agera.hometools.push.PushUtils
 
 /**
  * Created by mac on 2017/10/23.
@@ -29,21 +29,25 @@ class LaunchActivity : Activity() {
         if (!TextUtils.isEmpty(tel) && !TextUtils.isEmpty(password)) {
             LoginImp.instance().login(tel, password)
                     .ifSucceededSendTo {
+                        //set push account
+                        PushUtils.instance().setPushAccount(this, tel)
                         startMainActivity(true)
                     }
+                    .ifFailedSendTo {
+                        CommonUtils.instance().clearAccount()
+                        startActivity(Intent(this, LoginActivity::class.java))
+                    }
         } else {
-            //clear error account
-            CommonUtils.instance().clearData(Constants.USERNAME)
-            CommonUtils.instance().clearData(Constants.PASSWORD)
             startMainActivity(false)
         }
     }
 
     private fun startMainActivity(flag: Boolean) {
+
         var duration = System.currentTimeMillis() - startTime
         Handler().postDelayed({
             startActivity(Intent(this, if (flag) MainActivity::class.java else LoginActivity::class.java))
             finish()
-        }, if (duration >= 2_000) 0 else 2_000-duration)
+        }, if (duration >= 2_000) 0 else 2_000 - duration)
     }
 }

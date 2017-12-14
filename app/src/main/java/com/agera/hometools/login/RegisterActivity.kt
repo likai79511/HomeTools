@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.agera.hometools.MyApp
 import com.agera.hometools.R
+import com.agera.hometools.core.TaskDriver
 import com.agera.hometools.utils.CommonUtils
 import com.google.android.agera.Repositories
 import com.google.android.agera.Repository
@@ -80,7 +81,11 @@ class RegisterActivity : Activity(), Updatable {
     }
 
     override fun update() {
-        startActivity(Intent(this, LoginActivity::class.java))
+        CommonUtils.instance().showShortMessage(mEt_tel!!, "注册成功，即将跳转登陆页面...")
+        TaskDriver.instance().mainHandler.postDelayed({
+            startActivity(Intent(this, LoginActivity::class.java))
+        },1500)
+
     }
 
     override fun onDestroy() {

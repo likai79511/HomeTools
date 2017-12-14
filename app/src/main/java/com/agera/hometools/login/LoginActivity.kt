@@ -13,6 +13,7 @@ import com.agera.hometools.MyApp
 import com.agera.hometools.R
 import com.agera.hometools.utils.CommonUtils
 import com.agera.hometools.utils.Constants
+import com.agera.hometools.push.PushUtils
 import com.google.android.agera.Repositories
 import com.google.android.agera.Repository
 import com.google.android.agera.Result
@@ -92,8 +93,12 @@ class LoginActivity : Activity(), Updatable {
     }
 
     override fun update() {
+        //auto remember account
         CommonUtils.instance().saveData(Constants.USERNAME, tel)
         CommonUtils.instance().saveData(Constants.PASSWORD, password)
+        //refresh push
+        PushUtils.instance().setPushAccount(this,tel)
+        //start main page
         startActivity(Intent(this, MainActivity::class.java))
         finish()
     }

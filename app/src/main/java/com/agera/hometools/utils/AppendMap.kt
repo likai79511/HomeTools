@@ -5,19 +5,19 @@ import java.util.*
 /**
  * Created by Agera on 2017/11/8.
  */
-class AppendMap {
-    val map: HashMap<String, String> = HashMap()
+class AppendMap<T> {
+    val map: HashMap<String, T> = HashMap()
 
     init {
         map.clear()
     }
 
-    fun put(key: String, value: String): AppendMap {
+    fun put(key: String, value: T): AppendMap<T> {
         map.put(key, value)
         return this
     }
 
-    fun compile(): HashMap<String, String> {
+    fun compile(): HashMap<String, T> {
         return map
     }
 }
