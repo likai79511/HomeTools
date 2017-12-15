@@ -19,6 +19,8 @@ class TestPush : AppCompatActivity() {
         MyApp.instance().activity = this
 
         PushImp.instance().setPushAccount(this,"18291427145")
+
+//        startService(LocationService(this,))
     }
 
     fun addMsg(content:String){

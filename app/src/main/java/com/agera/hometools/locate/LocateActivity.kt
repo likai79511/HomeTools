@@ -22,6 +22,7 @@ class LocateActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.locate_view)
+
         initView(savedInstanceState)
         locationStyle.interval(2000)
         locationStyle.showMyLocation(true)
@@ -77,4 +78,5 @@ class LocateActivity : Activity() {
         super.onSaveInstanceState(outState)
         mMap!!.onSaveInstanceState(outState)
     }
+
 }
