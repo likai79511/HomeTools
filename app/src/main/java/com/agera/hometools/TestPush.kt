@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.agera.hometools.push.PushUtils
+import com.agera.hometools.push.PushImp
 
 class TestPush : AppCompatActivity() {
 
@@ -18,7 +18,7 @@ class TestPush : AppCompatActivity() {
 
         MyApp.instance().activity = this
 
-        PushUtils.instance().setPushAccount(this,"18291427145")
+        PushImp.instance().setPushAccount(this,"18291427145")
     }
 
     fun addMsg(content:String){

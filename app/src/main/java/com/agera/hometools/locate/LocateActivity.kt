@@ -33,7 +33,7 @@ class LocateActivity : Activity() {
         if (mMap != null)
             mMapControl = mMap!!.map
         initMap(true)
-        mMapControl?.moveCamera(CameraUpdateFactory.zoomTo(12f))
+        mMapControl?.moveCamera(CameraUpdateFactory.zoomTo(14f))
 
     }
 

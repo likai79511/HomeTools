@@ -1,13 +1,11 @@
 package com.agera.hometools.network
 
-import android.util.Log
 import com.agera.hometools.core.HttpCallable
 import com.agera.hometools.core.HttpTask
-import com.agera.hometools.core.TaskDriver
 import com.agera.hometools.push.PushMessage
 import com.agera.hometools.utils.AppendMap
 import com.agera.hometools.utils.CommonUtils
-import com.agera.hometools.utils.PushConstants
+import com.agera.hometools.utils.Constants
 import com.google.android.agera.net.HttpRequests
 import com.google.gson.Gson
 
@@ -58,7 +56,6 @@ class Restful private constructor() : RestfuInter {
     }
 
     //login
-
     override fun login(name: String, password: String): HttpTask {
         return HttpTask(HttpCallable(HttpRequests.httpGetRequest("$user_url?where={\"telephone\":\"$name\",\"password\":\"$password\"}")
                 .headerField(applicationIdDesc, applicationId)
@@ -69,18 +66,14 @@ class Restful private constructor() : RestfuInter {
                 .compile()))
     }
 
-    override fun sendMessage(msg: PushMessage) {
-        var msgStr = CommonUtils.instance().gson.toJson(msg)
-        Log.e("---", "--msg:$msgStr")
-
-        var task = HttpTask(HttpCallable(HttpRequests.httpPostRequest(push_url)
-                .body(msgStr.toByteArray())
+    //send push message
+    override fun sendMessage(msg: PushMessage): HttpTask {
+        return HttpTask(HttpCallable(HttpRequests.httpPostRequest(push_url)
+                .body(CommonUtils.instance().gson.toJson(msg).toByteArray())
                 .headerField(content_type, format_jason)
-                .headerField(AUTHORIZATION, PushConstants.AUTHORIZATION)
+                .headerField(AUTHORIZATION, Constants.AUTHORIZATION)
                 .connectTimeoutMs(timeout)
                 .readTimeoutMs(timeout)
                 .compile()))
-
-        TaskDriver.instance().mCore.submit(task)
     }
 }

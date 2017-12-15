@@ -2,7 +2,6 @@ package com.agera.hometools.push
 
 import com.agera.hometools.utils.AppendList
 import com.agera.hometools.utils.AppendMap
-import com.agera.hometools.utils.CommonUtils
 import com.google.gson.Gson
 
 /**
@@ -19,12 +18,11 @@ class MessageFactory private constructor(){
 
     }
 
-
-    fun createMessage(customMsg:CustomMessage):PushMessage{
-        var msg:PushMessage = PushMessage()
+    fun createPushMessage(messageType:Int,to:String,from:String):PushMessage{
+        var msg = PushMessage()
         msg.platform = "all"
-        msg.audience = AppendMap<ArrayList<String>>().put("alias",AppendList<String>().add(customMsg.to).compile()).compile()
-        msg.message = PushMessage.JPUSHMessage(CommonUtils.instance().gson.toJson(customMsg))
+        msg.audience = AppendMap<ArrayList<String>>().put("alias",AppendList<String>().add(to).compile()).compile()
+        msg.message = PushMessage.JPUSHMessage(gson.toJson(PushMessage.CustomMessage(messageType,to,from)))
         return msg
     }
 }

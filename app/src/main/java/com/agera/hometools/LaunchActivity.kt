@@ -7,7 +7,7 @@ import android.os.Handler
 import android.text.TextUtils
 import com.agera.hometools.login.LoginActivity
 import com.agera.hometools.login.LoginImp
-import com.agera.hometools.push.PushUtils
+import com.agera.hometools.push.PushImp
 import com.agera.hometools.utils.CommonUtils
 import com.agera.hometools.utils.Constants
 
@@ -30,7 +30,7 @@ class LaunchActivity : Activity() {
             var result = LoginImp.instance().login(tel, password)
                     .ifSucceededSendTo {
                         //set push account
-                        PushUtils.instance().setPushAccount(this, tel)
+                        PushImp.instance().setPushAccount(this, tel)
                         startMainActivity(true)
                     }
                     .ifFailedSendTo {

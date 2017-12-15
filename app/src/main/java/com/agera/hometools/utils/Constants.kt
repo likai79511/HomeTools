@@ -10,6 +10,10 @@ class Constants {
         val PASSWORD = "password"
 
 
+        //PUSH
+        var AUTHORIZATION = "Basic ZTdlMmYzYWQwYjFjMTg4NmExZGEyMWFkOmMzZjdhNzYyZjhhZTlmYzIyNWVmMDlmZg=="
+        //Message Type
+        val MESSAGE_LOCATION = 1
 
 
     }

@@ -1,5 +1,6 @@
 package com.agera.hometools.login
 
+import android.util.Log
 import android.widget.EditText
 import com.agera.hometools.bean.LoginResponse
 import com.agera.hometools.core.TaskDriver
@@ -57,6 +58,14 @@ class LoginImp private constructor() : LoginInter {
         task.get()
                 .ifFailedSendTo { Result.failure<String>(it) }
                 .ifSucceededSendTo {
+                    Log.e("----","----it-01:${it.bodyString.get()}")
+                    try {
+
+                        Log.e("----", "----it-02:${CommonUtils.instance().gson.fromJson(it.bodyString.get(), LoginResponse::class.java)}")
+                    }catch (e:Exception){
+                        Log.e("---","--error:${e.message}")
+                    }
+
                     if (it.responseCode > 400 || CommonUtils.instance().gson.fromJson(it.bodyString.get(), LoginResponse::class.java).results.size < 1) {
                         CommonUtils.instance().clearData(Constants.USERNAME, Constants.PASSWORD)
                         result = Result.failure<String>()
