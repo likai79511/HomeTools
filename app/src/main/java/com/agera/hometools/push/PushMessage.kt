@@ -14,5 +14,5 @@ class PushMessage{
     data class JPUSHMessage(var msg_content:String)
 
 
-    data class CustomMessage(val type:Int,val to:String,val from:String)
+    data class CustomMessage(val type:Int,val to:String,val from:String,val data:String)
 }

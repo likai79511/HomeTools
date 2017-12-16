@@ -1,10 +1,11 @@
 package com.agera.hometools.locate
 
-import android.app.IntentService
-import android.content.Context
+import android.app.Service
 import android.content.Intent
+import android.os.IBinder
 import android.util.Log
 import com.agera.hometools.bean.LocationData
+import com.agera.hometools.push.PushImp
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import java.text.SimpleDateFormat
@@ -13,33 +14,45 @@ import java.util.*
 /**
  * Created by mac on 2017/12/15.
  */
-class LocationService(val ctx: Context,var to:String,name: String = "location") : IntentService(name) {
+class LocationService : Service() {
 
-    var mTimeFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd  HH:mm:ss")
-    var locationClient = AMapLocationClient(ctx)
-    override fun onHandleIntent(intent: Intent?) {
+    var to: String? = null
+    private var mTimeFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd  HH:mm:ss")
+    private var locationClient: AMapLocationClient? = null
 
-        var data = getLocation()
+    override fun onBind(intent: Intent?): IBinder {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        to = intent?.getStringExtra("to")
+        getLocation()
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        locationClient = AMapLocationClient(this)
     }
 
     fun getLocation(): LocationData? {
 
         var options = AMapLocationClientOption()
-        options.isOnceLocation = true
-        locationClient.setLocationListener {
+        locationClient?.setLocationListener {
             if (it == null) {
                 Log.e("---", "---location is null")
             } else {
-                var lat = it.latitude
-                var long = it.longitude
-                var accur = it.accuracy
-                var time = mTimeFormat.format(Date(it.time))
-                Log.e("---", "---location is $it")
+                var data = LocationData(it.latitude, it.longitude, it.accuracy, mTimeFormat.format(Date(it.time)), it.address)
+                to?.let {
+                    PushImp.instance().sendLocationTo(data,it)
+                }
             }
+            stopSelf()
         }
-        options.setLocationMode(AMapLocationClientOption.AMapLocationMode.Hight_Accuracy)
-        locationClient.setLocationOption(options)
+        options.locationMode = AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
+        locationClient?.setLocationOption(options)
+        locationClient?.startLocation()
 
         return null
     }
@@ -48,6 +61,6 @@ class LocationService(val ctx: Context,var to:String,name: String = "location") 
     override fun onDestroy() {
         super.onDestroy()
         locationClient?.stopLocation()
-        Log.e("---","---onDestroy---")
     }
+
 }

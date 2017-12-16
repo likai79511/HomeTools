@@ -12,6 +12,12 @@
         android:id="@+id/lv"
         android:orientation="vertical"
         android:animateLayoutChanges="true"
-        />
+       >
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/btn"
+            android:text="get LOC"/>
+    </LinearLayout>
 
 </ScrollView>

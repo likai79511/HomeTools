@@ -13,7 +13,9 @@ class Constants {
         //PUSH
         var AUTHORIZATION = "Basic ZTdlMmYzYWQwYjFjMTg4NmExZGEyMWFkOmMzZjdhNzYyZjhhZTlmYzIyNWVmMDlmZg=="
         //Message Type
-        val MESSAGE_LOCATION = 1
+        val MESSAGE_REQUIRE_LOCATION = 1
+        val MESSAGE_TRANSFER_LOCATION = 2
+
 
 
     }

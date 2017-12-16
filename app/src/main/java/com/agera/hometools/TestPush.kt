@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.agera.hometools.push.PushImp
+import kotlinx.android.synthetic.main.activity_test_push.*
 
 class TestPush : AppCompatActivity() {
 
@@ -15,6 +16,10 @@ class TestPush : AppCompatActivity() {
         setContentView(R.layout.activity_test_push)
 
         lv = findViewById(R.id.lv) as LinearLayout
+
+        btn.setOnClickListener{
+            PushImp.instance().requireLocationByAlias("12345678901")
+        }
 
         MyApp.instance().activity = this
 
@@ -27,8 +32,8 @@ class TestPush : AppCompatActivity() {
         var tv = TextView(this)
         tv.apply {
             setTextColor(Color.BLACK)
-            setTextSize(16f)
-            setText(content)
+            textSize = 16f
+            text = content
         }
         lv?.addView(tv)
     }

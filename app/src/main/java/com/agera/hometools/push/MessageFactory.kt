@@ -18,11 +18,11 @@ class MessageFactory private constructor(){
 
     }
 
-    fun createPushMessage(messageType:Int,to:String,from:String):PushMessage{
+    fun createPushMessage(messageType:Int,to:String,from:String,data:String):PushMessage{
         var msg = PushMessage()
         msg.platform = "all"
         msg.audience = AppendMap<ArrayList<String>>().put("alias",AppendList<String>().add(to).compile()).compile()
-        msg.message = PushMessage.JPUSHMessage(gson.toJson(PushMessage.CustomMessage(messageType,to,from)))
+        msg.message = PushMessage.JPUSHMessage(gson.toJson(PushMessage.CustomMessage(messageType,to,from,data)))
         return msg
     }
 }

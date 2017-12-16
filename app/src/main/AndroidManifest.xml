@@ -114,6 +114,8 @@
             </intent-filter>
         </receiver>
 
+
+        <service android:name=".locate.LocationService"/>
     </application>
 
 </manifest>
