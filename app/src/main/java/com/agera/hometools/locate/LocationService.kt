@@ -3,6 +3,7 @@ package com.agera.hometools.locate
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import android.text.TextUtils
 import android.util.Log
 import com.agera.hometools.bean.LocationData
 import com.agera.hometools.push.PushImp
@@ -19,41 +20,43 @@ class LocationService : Service() {
     var to: String? = null
     private var mTimeFormat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd  HH:mm:ss")
     private var locationClient: AMapLocationClient? = null
+    var maxTry = 3
+    var tryCount = 0
 
     override fun onBind(intent: Intent?): IBinder {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
+        tryCount = 0
+        locationClient = AMapLocationClient(this)
         to = intent?.getStringExtra("to")
         getLocation()
         return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        locationClient = AMapLocationClient(this)
-    }
-
-    fun getLocation(): LocationData? {
+    private fun getLocation(): LocationData? {
 
         var options = AMapLocationClientOption()
         locationClient?.setLocationListener {
-            if (it == null) {
+            Log.e("---", "---location address: ${it.address}")
+            if ((it==null || TextUtils.isEmpty(it.address)) && tryCount<=maxTry){
+                tryCount++
+                locationClient?.startLocation()
                 Log.e("---", "---location is null")
-            } else {
+            }else {
                 var data = LocationData(it.latitude, it.longitude, it.accuracy, mTimeFormat.format(Date(it.time)), it.address)
+                Log.e("---","--location:$data")
                 to?.let {
                     PushImp.instance().sendLocationTo(data,it)
                 }
             }
             stopSelf()
         }
+        options.isOnceLocation = true
         options.locationMode = AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
         locationClient?.setLocationOption(options)
         locationClient?.startLocation()
-
         return null
     }
 

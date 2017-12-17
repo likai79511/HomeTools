@@ -24,7 +24,7 @@ class LocateActivity : Activity() {
         setContentView(R.layout.locate_view)
 
         initView(savedInstanceState)
-        locationStyle.interval(2000)
+        locationStyle.interval(2500)
         locationStyle.showMyLocation(true)
     }
 
@@ -41,20 +41,9 @@ class LocateActivity : Activity() {
     fun initMap(flag:Boolean) {
         mMapControl!!.myLocationStyle = locationStyle
         mMapControl!!.isMyLocationEnabled = flag
-        mMapControl!!.setOnMyLocationChangeListener(LocationChange)
     }
 
 
-    var LocationChange = object:AMap.OnMyLocationChangeListener{
-        override fun onMyLocationChange(p0: Location?) {
-            if (p0 != null) {
-                Log.e("---", "---location: ${p0.latitude},${p0.longitude}")
-            } else {
-                Log.e("---", "---location is null")
-            }
-        }
-
-    }
 
     override fun onDestroy() {
         super.onDestroy()

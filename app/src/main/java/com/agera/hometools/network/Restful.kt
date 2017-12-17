@@ -33,6 +33,7 @@ class Restful private constructor() : RestfuInter {
 
         private val TELEPHONE = "telephone"
         private val PASSWORD = "password"
+        private val FRIENDS = "friends"
         private val AUTHORIZATION = "Authorization"
 
         private var restful = Restful()
@@ -46,6 +47,7 @@ class Restful private constructor() : RestfuInter {
         return HttpTask(HttpCallable(HttpRequests.httpPostRequest(user_url)
                 .body(gson.toJson(AppendMap<String>().put(TELEPHONE, name)
                         .put(PASSWORD, password)
+                        .put(FRIENDS, "")
                         .compile()).toByteArray())
                 .headerField(applicationIdDesc, applicationId)
                 .headerField(rest_keyDesc, rest_key)

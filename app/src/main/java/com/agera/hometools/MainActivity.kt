@@ -42,10 +42,10 @@ class MainActivity : Activity(), View.OnClickListener {
             R.id.btn_family -> {
             }
             R.id.btn_kd -> {
-                var service: Intent = Intent(this, LocationService::class.java)
-                service.putExtra("to", "18291427145")
-                startService(service)
-//                startService(Intent(this,LocationService::class.java))
+//                var service: Intent = Intent(this, LocationService::class.java)
+//                service.putExtra("to", "18291427145")
+//                startService(service)
+                startService(Intent(this,LocationService::class.java))
             }
             R.id.btn_setting -> {
                 PushImp.instance().requireLocationByAlias("18291427145")
