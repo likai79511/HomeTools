@@ -116,7 +116,6 @@
 
         <service android:name=".locate.LocationService" />
 
-        <activity android:name=".locate.Main2Activity"></activity>
     </application>
 
 </manifest>
