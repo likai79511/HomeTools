@@ -1,9 +1,11 @@
 package com.agera.hometools.locate
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.agera.hometools.R
+import com.agera.hometools.locate.friends.FriendsActivity
 import com.amap.api.maps.AMap
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapView
@@ -29,7 +31,16 @@ class LocateActivity : Activity() {
         locationStyle.showMyLocation(true)
         locationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATION_ROTATE_NO_CENTER)
 
+        initClickEvents()
+
     }
+
+    fun initClickEvents(){
+        findViewById(R.id.btn_friends).setOnClickListener{
+            startActivity(Intent(this,FriendsActivity::class.java))
+        }
+    }
+
 
     private fun initView(savedInstanceState: Bundle?) {
         mMap = findViewById(R.id.map) as MapView?

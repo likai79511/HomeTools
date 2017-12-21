@@ -116,6 +116,10 @@
 
         <service android:name=".locate.LocationService" />
 
+        <activity
+            android:name=".locate.friends.FriendsActivity"
+            android:label="@string/title_activity_friends"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -8,9 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <Button
-        android:id="@+id/btn_search_other"
+        android:id="@+id/btn_friends"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:text="查看其他人"/>
+        android:text="Friends"/>
 </RelativeLayout>
