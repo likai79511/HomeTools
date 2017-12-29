@@ -20,7 +20,7 @@ import java.util.*
 /**
  * Created by mac on 2017/10/23.
  */
-class MainActivity : Activity(), View.OnClickListener {
+class MainActivity : BaseActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,59 +1,42 @@
-package com.agera.hometools
+package com.agera.hometools.push
 
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.text.TextUtils
 import android.util.Log
 import cn.jpush.android.api.JPushInterface
+import com.agera.hometools.MyApp
 import com.agera.hometools.bean.LocationData
 import com.agera.hometools.locate.LocationService
-import com.agera.hometools.push.PushMessage
 import com.agera.hometools.utils.CommonUtils
 import com.agera.hometools.utils.Constants
 
 /**
  * Created by mac on 2017/12/13.
  */
-class MyReceiver : BroadcastReceiver() {
+class MessageReceiver : BroadcastReceiver() {
 
     var mContext: Context? = null
     override fun onReceive(context: Context?, intent: Intent?) {
         mContext = context
         Log.e("---", "----onReceive:${intent?.action}")
 
-        var action = intent?.action
+        var action: String? = intent?.action ?: return
 
-        var data = intent?.extras
+        var data = intent?.extras ?: return
 
-        if (action == null)
-            return
 
         when (action) {
-            JPushInterface.ACTION_REGISTRATION_ID -> {
-                Log.e("---", "receive register id:${data?.get(JPushInterface.EXTRA_REGISTRATION_ID)}")
-            }
             JPushInterface.ACTION_MESSAGE_RECEIVED -> {
-                handleMessage(data?.get(JPushInterface.EXTRA_MESSAGE)?.toString())
+                handleMessage(data.get(JPushInterface.EXTRA_MESSAGE)?.toString())
             }
-            JPushInterface.ACTION_NOTIFICATION_RECEIVED -> {
-            }
-            JPushInterface.ACTION_NOTIFICATION_OPENED -> {
-            }
-            else -> {
-//                Log.e("---","can not resolve this message")
-            }
-
         }
 
     }
 
     private fun handleMessage(message: String?) {
-
+        message?:return
         Log.e("---", "receive custome message:$message")
-        if (TextUtils.isEmpty(message))
-            return
-        MyApp.instance().activity?.addMsg(message!!)
         try {
             var cm = CommonUtils.instance().gson.fromJson(message, PushMessage.CustomMessage::class.java)
             when (cm.type) {

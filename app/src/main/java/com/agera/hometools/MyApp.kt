@@ -22,15 +22,6 @@ class MyApp: Application() {
 
         JPushInterface.setDebugMode(true)
         JPushInterface.init(this)
-
-
     }
-
-    var activity:TestPush ?= null
-
-    fun setTestAct(act:TestPush){
-        activity = act
-    }
-
 
 }

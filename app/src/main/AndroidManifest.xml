@@ -103,7 +103,7 @@
             android:name="cn.jpush.android.service.AlarmReceiver"
             android:exported="false" />
         <receiver
-            android:name=".MyReceiver"
+            android:name=".push.MessageReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.REGISTRATION" />

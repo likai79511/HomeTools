@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import com.agera.hometools.BaseActivity
 import com.agera.hometools.MyApp
 import com.agera.hometools.R
 import com.agera.hometools.core.TaskDriver
@@ -18,7 +19,7 @@ import com.google.android.agera.Updatable
 /**
  * Created by Administrator on 2017/11/25 0025.
  */
-class RegisterActivity : Activity(), Updatable {
+class RegisterActivity : BaseActivity(), Updatable {
 
     var mEt_tel: EditText? = null
     var mEt_password: EditText? = null
@@ -61,6 +62,8 @@ class RegisterActivity : Activity(), Updatable {
                     LoginImp.instance().checkConfirmPassword(mEt_confirm_password, password)
                 }
                 .orSkip()
+                .goTo(TaskDriver.instance().mCore)
+                .typedResult(String::class.java)
                 .thenTransform {
                     CommonUtils.instance().showShortMessage(mEt_tel!!, "正在注册...")
                     LoginImp.instance().register(tel, password)

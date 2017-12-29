@@ -11,7 +11,7 @@ import com.agera.hometools.utils.Constants
 /**
  * Created by mac on 2017/12/14.
  */
-class PushImp private constructor():PushInter{
+class PushImp private constructor() : PushInter {
     companion object {
         private var utils = PushImp()
 
@@ -22,24 +22,22 @@ class PushImp private constructor():PushInter{
 
 
     override fun setPushAccount(ctx: Context, account: String) {
-
         if (JPushInterface.isPushStopped(ctx))
             JPushInterface.resumePush(ctx)
-
-        JPushInterface.setAlias(ctx,System.currentTimeMillis().toInt(), account)
+        JPushInterface.setAlias(ctx, System.currentTimeMillis().toInt(), account)
     }
 
 
     override fun requireLocationByAlias(alisa: String) {
-        TaskDriver.instance().mCore.submit(Restful.instance().sendMessage(MessageFactory.instance().createPushMessage(Constants.MESSAGE_REQUIRE_LOCATION,alisa,CommonUtils.instance().getData(Constants.USERNAME,"").toString(),"")))
+        TaskDriver.instance().execute(Restful.instance().sendMessage(MessageFactory.instance().createPushMessage(Constants.MESSAGE_REQUIRE_LOCATION, alisa, CommonUtils.instance().getData(Constants.USERNAME, "").toString(), "")))
     }
 
     override fun requireLocationByTag(tag: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun sendLocationTo(location: LocationData,to:String) {
-        TaskDriver.instance().mCore.submit(Restful.instance().sendMessage(MessageFactory.instance().createPushMessage(Constants.MESSAGE_TRANSFER_LOCATION,to,CommonUtils.instance().getData(Constants.USERNAME,"").toString(),CommonUtils.instance().gson.toJson(location))))
+    override fun sendLocationTo(location: LocationData, to: String) {
+        TaskDriver.instance().execute(Restful.instance().sendMessage(MessageFactory.instance().createPushMessage(Constants.MESSAGE_TRANSFER_LOCATION, to, CommonUtils.instance().getData(Constants.USERNAME, "").toString(), CommonUtils.instance().gson.toJson(location))))
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

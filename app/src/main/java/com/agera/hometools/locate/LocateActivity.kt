@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import com.agera.hometools.BaseActivity
 import com.agera.hometools.R
 import com.agera.hometools.locate.friends.FriendsActivity
 import com.amap.api.maps.AMap
@@ -15,7 +16,7 @@ import com.amap.api.maps.model.MyLocationStyle
 /**
  * Created by Agera on 2017/11/8.
  */
-class LocateActivity : Activity() {
+class LocateActivity : BaseActivity() {
     private var mMap: MapView? = null
     private var mMapControl: AMap? = null
 
@@ -35,34 +36,39 @@ class LocateActivity : Activity() {
 
     }
 
-    fun initClickEvents(){
-        findViewById(R.id.btn_friends).setOnClickListener{
-            startActivity(Intent(this,FriendsActivity::class.java))
+    fun initClickEvents() {
+        findViewById(R.id.btn_friends).setOnClickListener {
+            startActivity(Intent(this, FriendsActivity::class.java))
         }
     }
 
 
     private fun initView(savedInstanceState: Bundle?) {
-        mMap = findViewById(R.id.map) as MapView?
+        mMap = findViewById(R.id.map) as MapView
         mMap!!.onCreate(savedInstanceState)
         if (mMap != null)
             mMapControl = mMap!!.map
         initMap(true)
-        mMapControl?.moveCamera(CameraUpdateFactory.zoomTo(14f))
-        mMapControl?.isTrafficEnabled = true
-        mMapControl?.uiSettings?.isZoomControlsEnabled = false
-        mMapControl?.uiSettings?.isMyLocationButtonEnabled = true
-        mMapControl?.setOnMyLocationChangeListener {
-            if (isShowInCenter) {
-                mMapControl?.moveCamera(CameraUpdateFactory.changeLatLng(LatLng(it.latitude, it.longitude)))
-                isShowInCenter = false
+        mMapControl?.let {
+            it.moveCamera(CameraUpdateFactory.zoomTo(14f))
+//            it.isTrafficEnabled = true
+            it.uiSettings?.isZoomControlsEnabled = false
+            it.uiSettings?.isMyLocationButtonEnabled = true
+            it.setOnMyLocationChangeListener {
+                if (isShowInCenter) {
+                    mMapControl?.moveCamera(CameraUpdateFactory.changeLatLng(LatLng(it.latitude, it.longitude)))
+                    isShowInCenter = false
+                }
             }
         }
+
     }
 
     private fun initMap(flag: Boolean) {
         mMapControl!!.myLocationStyle = locationStyle
         mMapControl!!.isMyLocationEnabled = flag
+        mMapControl!!.uiSettings?.isMyLocationButtonEnabled = true
+        isShowInCenter = true
     }
 
 

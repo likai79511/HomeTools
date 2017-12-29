@@ -30,7 +30,7 @@ class LocationService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         tryCount = 0
         locationClient = AMapLocationClient(this)
-        to = intent?.getStringExtra("to")
+        to = intent?.getStringExtra("to")?:return super.onStartCommand(intent, flags, startId)
         getLocation()
         return super.onStartCommand(intent, flags, startId)
     }
@@ -43,13 +43,10 @@ class LocationService : Service() {
             if ((it==null || TextUtils.isEmpty(it.address)) && tryCount<=maxTry){
                 tryCount++
                 locationClient?.startLocation()
-                Log.e("---", "---location is null")
             }else {
                 var data = LocationData(it.latitude, it.longitude, it.accuracy, mTimeFormat.format(Date(it.time)), it.address)
                 Log.e("---","--location:$data")
-                to?.let {
-                    PushImp.instance().sendLocationTo(data,it)
-                }
+                PushImp.instance().sendLocationTo(data,to!!)
             }
             stopSelf()
         }

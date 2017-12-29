@@ -1,6 +1,5 @@
 package com.agera.hometools.login
 
-import android.util.Log
 import android.widget.EditText
 import com.agera.hometools.bean.LoginResponse
 import com.agera.hometools.core.TaskDriver
@@ -52,43 +51,34 @@ class LoginImp private constructor() : LoginInter {
     }
 
     override fun login(tel: String, password: String): Result<String> {
-        var task = Restful.instance().login(tel, password)
-        TaskDriver.instance().execute(task)
-        var result: Result<String>? = Result.failure()
-        task.get()
-                .ifFailedSendTo { Result.failure<String>(it) }
-                .ifSucceededSendTo {
-                    Log.e("----","----it-01:${it.bodyString.get()}")
-                    try {
-
-                        Log.e("----", "----it-02:${CommonUtils.instance().gson.fromJson(it.bodyString.get(), LoginResponse::class.java)}")
-                    }catch (e:Exception){
-                        Log.e("---","--error:${e.message}")
-                    }
-
-                    if (it.responseCode > 400 || CommonUtils.instance().gson.fromJson(it.bodyString.get(), LoginResponse::class.java).results.size < 1) {
-                        CommonUtils.instance().clearData(Constants.USERNAME, Constants.PASSWORD)
-                        result = Result.failure<String>()
-                    } else {
-                        result = Result.success("success")
-                    }
+        var responce = TaskDriver.instance().execute(Restful.instance().login(tel, password))
+        return if (responce.failed()) Result.failure(responce.failure)
+        else {
+            try {
+                var rep = responce.get()
+                if (rep.responseCode > 400 || CommonUtils.instance().gson.fromJson(rep.bodyString.get(), LoginResponse::class.java).results.size < 1) {
+                    CommonUtils.instance().clearData(Constants.USERNAME, Constants.PASSWORD)
+                    Result.failure<String>()
+                } else {
+                    Result.success("success")
                 }
-        return result!!
+            } catch (e: Exception) {
+                Result.failure<String>()
+            }
+        }
     }
 
+
     override fun register(tel: String, password: String): Result<String> {
-        var task = Restful.instance().register(tel, password)
-        TaskDriver.instance().execute(task)
-        var result: Result<String>? = Result.failure()
-        task.get()
-                .ifFailedSendTo { Result.failure<String>(it) }
-                .ifSucceededSendTo {
-                    if (it.responseCode > 400) {
-                        result = Result.failure<String>()
-                    } else if (it.responseCode in 201..300) {
-                        result = Result.success("success")
-                    }
-                }
-        return result!!
+        var responce = TaskDriver.instance().execute(Restful.instance().register(tel, password))
+        return if (responce.failed()) Result.failure(responce.failure)
+        else {
+            var rep = responce.get()
+            if (rep.responseCode in 201..300) {
+                Result.success("success")
+            } else {
+                Result.failure()
+            }
+        }
     }
 }

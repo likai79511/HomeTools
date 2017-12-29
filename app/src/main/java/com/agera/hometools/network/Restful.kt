@@ -1,11 +1,10 @@
 package com.agera.hometools.network
 
-import com.agera.hometools.core.HttpCallable
-import com.agera.hometools.core.HttpTask
 import com.agera.hometools.push.PushMessage
 import com.agera.hometools.utils.AppendMap
 import com.agera.hometools.utils.CommonUtils
 import com.agera.hometools.utils.Constants
+import com.google.android.agera.net.HttpRequest
 import com.google.android.agera.net.HttpRequests
 import com.google.gson.Gson
 
@@ -43,8 +42,8 @@ class Restful private constructor() : RestfuInter {
 
     }
 
-    override fun register(name: String, password: String): HttpTask {
-        return HttpTask(HttpCallable(HttpRequests.httpPostRequest(user_url)
+    override fun register(name: String, password: String): HttpRequest {
+        return HttpRequests.httpPostRequest(user_url)
                 .body(gson.toJson(AppendMap<String>().put(TELEPHONE, name)
                         .put(PASSWORD, password)
                         .put(FRIENDS, "")
@@ -54,28 +53,28 @@ class Restful private constructor() : RestfuInter {
                 .headerField(content_type, format_jason)
                 .connectTimeoutMs(timeout)
                 .readTimeoutMs(timeout)
-                .compile()))
+                .compile()
     }
 
     //login
-    override fun login(name: String, password: String): HttpTask {
-        return HttpTask(HttpCallable(HttpRequests.httpGetRequest("$user_url?where={\"telephone\":\"$name\",\"password\":\"$password\"}")
+    override fun login(name: String, password: String): HttpRequest {
+        return HttpRequests.httpGetRequest("$user_url?where={\"telephone\":\"$name\",\"password\":\"$password\"}")
                 .headerField(applicationIdDesc, applicationId)
                 .headerField(rest_keyDesc, rest_key)
                 .headerField(content_type, format_jason)
                 .connectTimeoutMs(timeout)
                 .readTimeoutMs(timeout)
-                .compile()))
+                .compile()
     }
 
     //send push message
-    override fun sendMessage(msg: PushMessage): HttpTask {
-        return HttpTask(HttpCallable(HttpRequests.httpPostRequest(push_url)
+    override fun sendMessage(msg: PushMessage): HttpRequest {
+        return HttpRequests.httpPostRequest(push_url)
                 .body(CommonUtils.instance().gson.toJson(msg).toByteArray())
                 .headerField(content_type, format_jason)
                 .headerField(AUTHORIZATION, Constants.AUTHORIZATION)
                 .connectTimeoutMs(timeout)
                 .readTimeoutMs(timeout)
-                .compile()))
+                .compile()
     }
 }
