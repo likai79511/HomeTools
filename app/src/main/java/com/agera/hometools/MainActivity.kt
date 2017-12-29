@@ -1,21 +1,12 @@
 package com.agera.hometools
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import com.agera.hometools.bean.LocationData
 import com.agera.hometools.locate.LocateActivity
 import com.agera.hometools.locate.LocationService
 import com.agera.hometools.push.PushImp
-import com.agera.hometools.utils.CommonUtils
-import com.agera.hometools.utils.Constants
-import com.amap.api.location.AMapLocationClient
-import com.amap.api.location.AMapLocationClientOption
 import kotlinx.android.synthetic.main.activity_main.*
-import java.text.SimpleDateFormat
-import java.util.*
 
 /**
  * Created by mac on 2017/10/23.
@@ -48,7 +39,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 startService(Intent(this,LocationService::class.java))
             }
             R.id.btn_setting -> {
-                PushImp.instance().requireLocationByAlias("18291427145")
+                PushImp.instance().requireLocationByAlias("12345678901")
             }
         }
     }

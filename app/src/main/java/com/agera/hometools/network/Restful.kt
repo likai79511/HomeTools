@@ -18,7 +18,7 @@ class Restful private constructor() : RestfuInter {
         private val push_url = "https://bjapi.push.jiguang.cn/v3/push"
 
 
-        private val timeout = 101000
+        private val timeout = 10_1000
 
         private val applicationIdDesc = "X-Bmob-Application-Id"
         private val rest_keyDesc = "X-Bmob-REST-API-Key"

@@ -29,7 +29,9 @@ class PushImp private constructor() : PushInter {
 
 
     override fun requireLocationByAlias(alisa: String) {
-        TaskDriver.instance().execute(Restful.instance().sendMessage(MessageFactory.instance().createPushMessage(Constants.MESSAGE_REQUIRE_LOCATION, alisa, CommonUtils.instance().getData(Constants.USERNAME, "").toString(), "")))
+        TaskDriver.instance().mCore.submit {
+            TaskDriver.instance().execute(Restful.instance().sendMessage(MessageFactory.instance().createPushMessage(Constants.MESSAGE_REQUIRE_LOCATION, alisa, CommonUtils.instance().getData(Constants.USERNAME, "").toString(), "")))
+        }
     }
 
     override fun requireLocationByTag(tag: String) {
@@ -37,7 +39,9 @@ class PushImp private constructor() : PushInter {
     }
 
     override fun sendLocationTo(location: LocationData, to: String) {
-        TaskDriver.instance().execute(Restful.instance().sendMessage(MessageFactory.instance().createPushMessage(Constants.MESSAGE_TRANSFER_LOCATION, to, CommonUtils.instance().getData(Constants.USERNAME, "").toString(), CommonUtils.instance().gson.toJson(location))))
+        TaskDriver.instance().mCore.submit {
+            TaskDriver.instance().execute(Restful.instance().sendMessage(MessageFactory.instance().createPushMessage(Constants.MESSAGE_TRANSFER_LOCATION, to, CommonUtils.instance().getData(Constants.USERNAME, "").toString(), CommonUtils.instance().gson.toJson(location))))
+        }
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
