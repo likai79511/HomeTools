@@ -1,4 +1,4 @@
-package com.agera.hometools.login
+package com.agera.hometools.common
 
 import android.view.View
 import com.google.android.agera.BaseObservable

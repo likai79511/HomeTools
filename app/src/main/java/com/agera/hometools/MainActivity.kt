@@ -39,7 +39,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 startService(Intent(this,LocationService::class.java))
             }
             R.id.btn_setting -> {
-                PushImp.instance().requireLocationByAlias("12345678901")
+                PushImp.instance().requireLocationByAlias("18291427145")
             }
         }
     }

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
-import android.util.Log
 import com.agera.hometools.core.TaskDriver
 import com.agera.hometools.login.LoginActivity
 import com.agera.hometools.login.LoginImp
@@ -27,17 +26,13 @@ class LaunchActivity : BaseActivity() {
         var tel: String = CommonUtils.instance().getData(Constants.USERNAME, "") as String
         var password: String = CommonUtils.instance().getData(Constants.PASSWORD, "") as String
 
-        Log.e("---","----main thread: ${Thread.currentThread().id}")
         if (!TextUtils.isEmpty(tel) && !TextUtils.isEmpty(password)) {
             TaskDriver.instance().mCore.submit{
-                Log.e("---","----thread-02: ${Thread.currentThread().id}")
                 LoginImp.instance().login(tel,password)
                         .ifFailedSendTo {
-                            Log.e("---","----thread-02--ifFailedSendTo: ${Thread.currentThread().id}")
                             TaskDriver.instance().mainHandler.post{startActivity(Intent(this, LoginActivity::class.java))}
                         }
                         .ifSucceededSendTo {
-                            Log.e("---","----thread-02--ifSucceededSendTo: ${Thread.currentThread().id}")
                             //set push account
                             PushImp.instance().setPushAccount(this, tel)
                             TaskDriver.instance().mainHandler.post{startMainActivity(true)}

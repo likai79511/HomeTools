@@ -11,6 +11,7 @@ import com.agera.hometools.BaseActivity
 import com.agera.hometools.MainActivity
 import com.agera.hometools.MyApp
 import com.agera.hometools.R
+import com.agera.hometools.common.ClickObservable
 import com.agera.hometools.core.TaskDriver
 import com.agera.hometools.push.PushImp
 import com.agera.hometools.utils.CommonUtils

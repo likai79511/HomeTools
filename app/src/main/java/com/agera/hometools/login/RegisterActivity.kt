@@ -8,6 +8,7 @@ import android.widget.EditText
 import com.agera.hometools.BaseActivity
 import com.agera.hometools.MyApp
 import com.agera.hometools.R
+import com.agera.hometools.common.ClickObservable
 import com.agera.hometools.core.TaskDriver
 import com.agera.hometools.utils.CommonUtils
 import com.google.android.agera.Repositories
