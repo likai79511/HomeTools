@@ -9,7 +9,7 @@ import com.agera.hometools.push.PushImp
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
- * Created by mac on 2017/10/23.
+ * Created by Agera on 2017/10/23.
  */
 class MainActivity : BaseActivity(), View.OnClickListener {
 

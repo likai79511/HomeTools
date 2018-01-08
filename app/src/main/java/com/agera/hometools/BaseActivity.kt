@@ -5,7 +5,7 @@ import com.google.android.agera.RepositoryCompilerStates
 import com.google.android.agera.Result
 
 /**
- * Created by mac on 2017/12/22.
+ * Created by Agera on 2017/12/22.
  */
 open class BaseActivity : Activity() {
 

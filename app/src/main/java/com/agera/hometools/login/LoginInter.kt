@@ -4,7 +4,7 @@ import android.widget.EditText
 import com.google.android.agera.Result
 
 /**
- * Created by 43992639 on 2017/11/24.
+ * Created by Agera on 2017/11/24.
  */
 interface LoginInter {
     fun checkTel(view:EditText?):Result<String>

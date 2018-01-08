@@ -4,16 +4,14 @@ import android.app.Application
 import cn.jpush.android.api.JPushInterface
 
 /**
- * Created by mac on 2017/10/24.
+ * Created by Agera on 2017/10/24.
  */
 class MyApp: Application() {
 
 
     companion object {
         private var app: MyApp? = null
-        fun instance(): MyApp {
-            return app!!
-        }
+        fun instance() = app!!
     }
 
     override fun onCreate() {

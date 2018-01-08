@@ -5,7 +5,7 @@ import com.agera.hometools.utils.AppendMap
 import com.google.gson.Gson
 
 /**
- * Created by mac on 2017/12/14.
+ * Created by Agera on 2017/12/14.
  */
 class MessageFactory private constructor(){
 

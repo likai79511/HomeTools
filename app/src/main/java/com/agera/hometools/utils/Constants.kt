@@ -1,7 +1,7 @@
 package com.agera.hometools.utils
 
 /**
- * Created by mac on 2017/10/24.
+ * Created by Agera on 2017/10/24.
  */
 class Constants {
     companion object {

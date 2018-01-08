@@ -4,7 +4,7 @@ import com.agera.hometools.push.PushMessage
 import com.google.android.agera.net.HttpRequest
 
 /**
- * Created by mac on 2017/12/14.
+ * Created by Agera on 2017/12/14.
  */
 interface RestfuInter {
     fun register(name: String, password: String): HttpRequest

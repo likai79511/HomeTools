@@ -13,7 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 /**
- * Created by mac on 2017/12/15.
+ * Created by Agera on 2017/12/15.
  */
 class LocationService : Service() {
 
@@ -30,23 +30,24 @@ class LocationService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         tryCount = 0
         locationClient = AMapLocationClient(this)
-        to = intent?.getStringExtra("to")?:return super.onStartCommand(intent, flags, startId)
+        to = intent?.getStringExtra("to") ?: return super.onStartCommand(intent, flags, startId)
         getLocation()
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun getLocation(): LocationData? {
-
+    private fun getLocation() {
         var options = AMapLocationClientOption()
         locationClient?.setLocationListener {
             Log.e("---", "---location address: ${it.address}")
-            if ((it==null || TextUtils.isEmpty(it.address)) && tryCount<=maxTry){
-                tryCount++
-                locationClient?.startLocation()
-            }else {
+            if (TextUtils.isEmpty(it.address)) {
+                if (tryCount <= maxTry) {
+                    tryCount++
+                    locationClient?.startLocation()
+                }
+            } else {
                 var data = LocationData(it.latitude, it.longitude, it.accuracy, mTimeFormat.format(Date(it.time)), it.address)
-                Log.e("---","--location:$data")
-                PushImp.instance().sendLocationTo(data,to!!)
+                Log.e("---", "--location:$data")
+                PushImp.instance().sendLocationTo(data, to!!)
             }
             stopSelf()
         }
@@ -54,7 +55,6 @@ class LocationService : Service() {
         options.locationMode = AMapLocationClientOption.AMapLocationMode.Hight_Accuracy
         locationClient?.setLocationOption(options)
         locationClient?.startLocation()
-        return null
     }
 
 

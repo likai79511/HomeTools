@@ -9,15 +9,13 @@ import com.agera.hometools.utils.CommonUtils
 import com.agera.hometools.utils.Constants
 
 /**
- * Created by mac on 2017/12/14.
+ * Created by Agera on 2017/12/14.
  */
 class PushImp private constructor() : PushInter {
     companion object {
         private var utils = PushImp()
 
-        fun instance(): PushImp {
-            return utils
-        }
+        fun instance() = utils
     }
 
 

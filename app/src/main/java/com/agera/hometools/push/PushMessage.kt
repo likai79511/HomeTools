@@ -1,7 +1,7 @@
 package com.agera.hometools.push
 
 /**
- * Created by mac on 2017/12/14.
+ * Created by Agera on 2017/12/14.
  */
 class PushMessage{
 

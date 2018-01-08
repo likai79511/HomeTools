@@ -1,5 +1,6 @@
 package com.agera.hometools.login
 
+import android.util.Log
 import android.widget.EditText
 import com.agera.hometools.bean.LoginResponse
 import com.agera.hometools.core.TaskDriver
@@ -9,11 +10,12 @@ import com.agera.hometools.utils.Constants
 import com.google.android.agera.Result
 
 /**
- * Created by 43992639 on 2017/11/24.
+ * Created by Agera on 2017/11/24.
  */
 class LoginImp private constructor() : LoginInter {
+
     companion object {
-        var loginImp = LoginImp()
+        private var loginImp = LoginImp()
         fun instance(): LoginImp = loginImp
     }
 
@@ -74,6 +76,7 @@ class LoginImp private constructor() : LoginInter {
         return if (responce.failed()) Result.failure(responce.failure)
         else {
             var rep = responce.get()
+            Log.e("---","---register result:${rep.bodyString.get()}\n responseCode: ${rep.responseCode}")
             if (rep.responseCode in 201..300) {
                 Result.success("success")
             } else {

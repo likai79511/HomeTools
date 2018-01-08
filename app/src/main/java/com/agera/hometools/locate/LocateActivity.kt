@@ -1,6 +1,5 @@
 package com.agera.hometools.locate
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -45,9 +44,13 @@ class LocateActivity : BaseActivity() {
 
     private fun initView(savedInstanceState: Bundle?) {
         mMap = findViewById(R.id.map) as MapView
+
+        mMap ?: return
+
         mMap!!.onCreate(savedInstanceState)
-        if (mMap != null)
-            mMapControl = mMap!!.map
+
+        mMapControl = mMap!!.map
+
         initMap(true)
         mMapControl?.let {
             it.moveCamera(CameraUpdateFactory.zoomTo(14f))
@@ -65,34 +68,36 @@ class LocateActivity : BaseActivity() {
     }
 
     private fun initMap(flag: Boolean) {
-        mMapControl!!.myLocationStyle = locationStyle
-        mMapControl!!.isMyLocationEnabled = flag
-        mMapControl!!.uiSettings?.isMyLocationButtonEnabled = true
+        mMapControl?.apply {
+            myLocationStyle = locationStyle
+            isMyLocationEnabled = flag
+            uiSettings?.isMyLocationButtonEnabled = true
+        }
         isShowInCenter = true
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
-        mMap!!.onDestroy()
+        mMap?.onDestroy()
     }
 
     override fun onResume() {
         super.onResume()
-        mMap!!.onResume()
+        mMap?.onResume()
         initMap(true)
     }
 
     override fun onPause() {
         super.onPause()
-        mMap!!.onPause()
+        mMap?.onPause()
         initMap(false)
         Log.e("---", "---map onPause")
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        mMap!!.onSaveInstanceState(outState)
+        mMap?.onSaveInstanceState(outState)
     }
 
 }

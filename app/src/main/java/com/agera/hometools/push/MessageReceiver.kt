@@ -5,14 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import cn.jpush.android.api.JPushInterface
-import com.agera.hometools.MyApp
 import com.agera.hometools.bean.LocationData
 import com.agera.hometools.locate.LocationService
 import com.agera.hometools.utils.CommonUtils
 import com.agera.hometools.utils.Constants
 
 /**
- * Created by mac on 2017/12/13.
+ * Created by Agera on 2017/12/13.
  */
 class MessageReceiver : BroadcastReceiver() {
 

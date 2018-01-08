@@ -11,16 +11,14 @@ import com.agera.hometools.core.TaskDriver
 import com.google.gson.Gson
 
 /**
- * Created by mac on 2017/11/7.
+ * Created by Agera on 2017/11/7.
  */
 class CommonUtils private constructor() {
     var gson: Gson = Gson()
 
     companion object {
         private var instance: CommonUtils = CommonUtils()
-        fun instance(): CommonUtils {
-            return instance
-        }
+        fun instance() = instance
     }
 
     fun showShortMessage(payload: View, message: String) {
@@ -100,11 +98,7 @@ class CommonUtils private constructor() {
     }
 
 
-    fun clearAccount() {
-        //clear account
-        clearData(Constants.USERNAME)
-        clearData(Constants.PASSWORD)
-    }
+    fun saveAccountInfo(account: String, password: String) = saveData(Constants.USERNAME, account) && saveData(Constants.PASSWORD, password)
 
 
     fun checkTel(tel: String): Boolean = !TextUtils.isEmpty(tel) && tel.length == 11

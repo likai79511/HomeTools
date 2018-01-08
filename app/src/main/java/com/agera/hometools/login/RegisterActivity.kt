@@ -1,6 +1,5 @@
 package com.agera.hometools.login
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -17,7 +16,7 @@ import com.google.android.agera.Result
 import com.google.android.agera.Updatable
 
 /**
- * Created by Administrator on 2017/11/25 0025.
+ * Created by Agera on 2017/11/25 0025.
  */
 class RegisterActivity : BaseActivity(), Updatable {
 
