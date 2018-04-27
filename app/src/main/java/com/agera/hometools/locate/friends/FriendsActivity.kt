@@ -3,6 +3,7 @@ package com.agera.hometools.locate.friends
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import com.agera.hometools.BaseActivity
 import com.agera.hometools.R
 import com.agera.hometools.common.RefreshListener
@@ -16,9 +17,9 @@ import com.google.android.agera.Updatable
 class FriendsActivity : BaseActivity(), Updatable {
 
 
-    var mSwipe: SwipeRefreshLayout? = null
+    lateinit var mSwipe: SwipeRefreshLayout
     var mRv: RecyclerView? = null
-    var mRep: Repository<Result<String>>? = null
+    lateinit var mRep: Repository<Result<List<*>>>
     var mRefreshlistener: RefreshListener? = null
 
 
@@ -40,17 +41,27 @@ class FriendsActivity : BaseActivity(), Updatable {
         mRefreshlistener = RefreshListener()
         mSwipe?.setOnRefreshListener(mRefreshlistener)
 
-        mRep = Repositories.repositoryWithInitialValue(Result.absent<String>())
+        mSwipe.setRefreshing(true)
+
+        mRep = Repositories.repositoryWithInitialValue(Result.absent<List<String>>())
                 .observe(mRefreshlistener)
                 .onUpdatesPerLoop()
                 .goTo(TaskDriver.instance().mCore)
-                .typedResult(String::class.java)
-                .thenTransform {
-
+                .typedResult(List::class.java)
+                .thenGetFrom {
+                    var friendlist = FriendsImp.instance().getFriends();
+                    if (friendlist == null || friendlist.size == 0) {
+                        TaskDriver.instance().mainHandler.post {
+                            mSwipe.isRefreshing = false
+                        }
+                        Result.failure()
+                    } else {
+                        Result.success(friendlist)
+                    }
                 }
                 .notifyIf { _, v2 ->
                     if (v2.failed()) {
-                        CommonUtils.instance().showShortMessage(mSwipe!!, "网络异常")
+                        CommonUtils.instance().showShortMessage(mSwipe!!, "没有数据")
                     }
                     v2.succeeded()
                 }
@@ -62,6 +73,13 @@ class FriendsActivity : BaseActivity(), Updatable {
 
     override fun update() {
         var result = mRep!!.get().get()
+        mSwipe.setRefreshing(false)
+        Log.e("---", "----update----")
+        var list = mRep.get().get()
+        list.forEach {
+            Log.e("---", "--element::$it")
+        }
+
     }
 
     override fun onDestroy() {

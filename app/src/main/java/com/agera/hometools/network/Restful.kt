@@ -1,5 +1,7 @@
 package com.agera.hometools.network
 
+import android.util.Log
+import com.agera.hometools.MyApp
 import com.agera.hometools.push.PushMessage
 import com.agera.hometools.utils.AppendMap
 import com.agera.hometools.utils.CommonUtils
@@ -12,10 +14,12 @@ import com.google.gson.Gson
  * Created by Agera on 2017/11/8.
  */
 class Restful private constructor() : RestfuInter {
+
     //regist
     companion object {
         private val user_url = "https://api.bmob.cn/1/classes/user"
         private val push_url = "https://bjapi.push.jiguang.cn/v3/push"
+        private val query_url = "https://api.bmob.cn/1/cloudQuery"
 
 
         private val timeout = 10_1000
@@ -73,6 +77,23 @@ class Restful private constructor() : RestfuInter {
                 .body(CommonUtils.instance().gson.toJson(msg).toByteArray())
                 .headerField(content_type, format_jason)
                 .headerField(AUTHORIZATION, Constants.AUTHORIZATION)
+                .connectTimeoutMs(timeout)
+                .readTimeoutMs(timeout)
+                .compile()
+    }
+
+    override fun queryUserInfo(): HttpRequest {
+        var str1 = "bql=select friends from user where telephone='${MyApp.instance().userName}'"
+        //?$str1
+
+        var str = query_url
+        Log.e("---", "--str: $str")
+
+//        return HttpRequests.httpGetRequest("https://api.bmob.cn/1/cloudQuery")
+        return HttpRequests.httpGetRequest("http://www.baidu.com")
+                /*.headerField(applicationIdDesc, applicationId)
+                .headerField(rest_keyDesc, rest_key)
+                .headerField(content_type, format_jason)*/
                 .connectTimeoutMs(timeout)
                 .readTimeoutMs(timeout)
                 .compile()

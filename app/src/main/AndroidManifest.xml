@@ -35,7 +35,7 @@
             android:name="com.amap.api.v2.apikey"
             android:value="651c291cd2c1292ef5b1884f968568ee" />
 
-        <activity android:name=".LaunchActivity">
+        <activity android:name=".locate.friends.FriendsActivity"> //LaunchActivity
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -116,10 +116,10 @@
 
         <service android:name=".locate.LocationService" />
 
-        <activity
+      <!--  <activity
             android:name=".locate.friends.FriendsActivity"
             android:label="@string/title_activity_friends"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>-->
     </application>
 
 </manifest>

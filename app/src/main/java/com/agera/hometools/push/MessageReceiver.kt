@@ -18,7 +18,7 @@ class MessageReceiver : BroadcastReceiver() {
     var mContext: Context? = null
     override fun onReceive(context: Context?, intent: Intent?) {
         mContext = context
-        Log.e("---", "----onReceive:${intent?.action}")
+//        Log.e("---", "----onReceive:${intent?.action}")
 
         var action: String? = intent?.action ?: return
 

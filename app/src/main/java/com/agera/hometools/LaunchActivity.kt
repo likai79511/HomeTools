@@ -35,6 +35,7 @@ class LaunchActivity : BaseActivity() {
                         .ifSucceededSendTo {
                             //set push account
                             PushImp.instance().setPushAccount(this, tel)
+                            MyApp.instance().userName = tel
                             TaskDriver.instance().mainHandler.post{startMainActivity(true)}
                         }
             }
