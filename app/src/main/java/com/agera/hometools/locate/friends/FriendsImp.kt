@@ -18,20 +18,14 @@ class FriendsImp {
     }
 
 
-    fun getFriends(): List<String>? {
-        var friends: List<String> = emptyList()
+    fun getFriends(): ArrayList<String>? {
+        var friends = ArrayList<String>()
         var startTime = System.currentTimeMillis()
         TaskDriver.instance().execute(Restful.instance().queryUserInfo())
                 .ifSucceededSendTo {
-
                     var response = it.bodyString.get()?.trim()
-                    Log.e("---", "--request time: " + (System.currentTimeMillis() - startTime)+"\nresponse:$response")
                     TextUtils.isEmpty(response) ?: return@ifSucceededSendTo
                     friends = Gson().fromJson(response, Friends::class.java).getFriends()
-                    friends.forEach {
-                        Log.e("---", "---parse friends: $it")
-                    }
-
                 }
                 .ifFailedSendTo {
                     Log.e("---", "---error:" + it.message)

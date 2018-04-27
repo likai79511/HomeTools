@@ -1,6 +1,5 @@
 package com.agera.hometools.network
 
-import android.util.Log
 import com.agera.hometools.MyApp
 import com.agera.hometools.push.PushMessage
 import com.agera.hometools.utils.AppendMap
@@ -83,17 +82,9 @@ class Restful private constructor() : RestfuInter {
     }
 
     override fun queryUserInfo(): HttpRequest {
-        var str1 = "bql=select friends from user where telephone='${MyApp.instance().userName}'"
-        //?$str1
-
-        var str = query_url
-        Log.e("---", "--str: $str")
-
-//        return HttpRequests.httpGetRequest("https://api.bmob.cn/1/cloudQuery")
-        return HttpRequests.httpGetRequest("http://www.baidu.com")
-                /*.headerField(applicationIdDesc, applicationId)
+        return HttpRequests.httpGetRequest("$query_url?bql=select%20friends%20from%20user%20where%20telephone='${MyApp.instance().userName}'")
+                .headerField(applicationIdDesc, applicationId)
                 .headerField(rest_keyDesc, rest_key)
-                .headerField(content_type, format_jason)*/
                 .connectTimeoutMs(timeout)
                 .readTimeoutMs(timeout)
                 .compile()

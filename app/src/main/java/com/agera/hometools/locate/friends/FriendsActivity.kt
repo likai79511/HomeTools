@@ -18,8 +18,9 @@ class FriendsActivity : BaseActivity(), Updatable {
 
 
     lateinit var mSwipe: SwipeRefreshLayout
-    var mRv: RecyclerView? = null
-    lateinit var mRep: Repository<Result<List<*>>>
+    lateinit var mRv: RecyclerView
+    lateinit var mRep: Repository<Result<ArrayList<*>>>
+    lateinit var mAdapter:FriendAdapter
     var mRefreshlistener: RefreshListener? = null
 
 
@@ -35,6 +36,8 @@ class FriendsActivity : BaseActivity(), Updatable {
     fun initView() {
         mSwipe = findViewById(R.id.swipe) as SwipeRefreshLayout
         mRv = findViewById(R.id.rv) as RecyclerView
+        mAdapter = FriendAdapter(this,null)
+        mRv.adapter = mAdapter
     }
 
     fun initEvents() {
@@ -43,11 +46,11 @@ class FriendsActivity : BaseActivity(), Updatable {
 
         mSwipe.setRefreshing(true)
 
-        mRep = Repositories.repositoryWithInitialValue(Result.absent<List<String>>())
+        mRep = Repositories.repositoryWithInitialValue(Result.absent<ArrayList<String>>())
                 .observe(mRefreshlistener)
                 .onUpdatesPerLoop()
                 .goTo(TaskDriver.instance().mCore)
-                .typedResult(List::class.java)
+                .typedResult(ArrayList::class.java)
                 .thenGetFrom {
                     var friendlist = FriendsImp.instance().getFriends();
                     if (friendlist == null || friendlist.size == 0) {
@@ -73,13 +76,12 @@ class FriendsActivity : BaseActivity(), Updatable {
 
     override fun update() {
         var result = mRep!!.get().get()
-        mSwipe.setRefreshing(false)
+
         Log.e("---", "----update----")
         var list = mRep.get().get()
-        list.forEach {
-            Log.e("---", "--element::$it")
-        }
-
+        mAdapter.setData(list as ArrayList<String>)
+        mAdapter.notifyDataSetChanged()
+        mSwipe.setRefreshing(false)
     }
 
     override fun onDestroy() {

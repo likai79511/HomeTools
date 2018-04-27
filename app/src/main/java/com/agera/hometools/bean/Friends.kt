@@ -1,5 +1,6 @@
 package com.agera.hometools.bean
 
+import android.text.TextUtils
 import android.util.Log
 
 /**
@@ -7,22 +8,21 @@ import android.util.Log
  */
 class Friends(var results: List<Map<String, String>>) {
 
-    fun getFriends(): List<String> {
-        var friends = emptyList<String>()
+    fun getFriends(): ArrayList<String> {
+        var friends = ArrayList<String>()
         try {
             if (results == null || results.size == 0)
                 return friends
-            var friendStr = results[0]["friends"]?.replace("\\", "")
-            Log.e("---","---getFriends-001--: $friendStr")
+            var friendStr = results[0]["friends"]?.replace("\\", "")?.replace("\"", "")
             friendStr?.split(",")?.forEach {
-                Log.e("---","---getFriends-item--: $it")
-                friends.plus(it)
+                if (!TextUtils.isEmpty(it)){
+                    friends.add(it)
+                }
             }
 
         } catch (e: Exception) {
             Log.e("---", "--getFriends appear error: ${e.message}")
         }
-
         return friends
     }
 
