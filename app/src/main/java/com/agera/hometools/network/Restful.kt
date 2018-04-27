@@ -1,5 +1,6 @@
 package com.agera.hometools.network
 
+import com.agera.hometools.MyApp
 import com.agera.hometools.push.PushMessage
 import com.agera.hometools.utils.AppendMap
 import com.agera.hometools.utils.CommonUtils
@@ -12,10 +13,12 @@ import com.google.gson.Gson
  * Created by Agera on 2017/11/8.
  */
 class Restful private constructor() : RestfuInter {
+
     //regist
     companion object {
         private val user_url = "https://api.bmob.cn/1/classes/user"
         private val push_url = "https://bjapi.push.jiguang.cn/v3/push"
+        private val query_url = "https://api.bmob.cn/1/cloudQuery"
 
 
         private val timeout = 10_1000
@@ -73,6 +76,15 @@ class Restful private constructor() : RestfuInter {
                 .body(CommonUtils.instance().gson.toJson(msg).toByteArray())
                 .headerField(content_type, format_jason)
                 .headerField(AUTHORIZATION, Constants.AUTHORIZATION)
+                .connectTimeoutMs(timeout)
+                .readTimeoutMs(timeout)
+                .compile()
+    }
+
+    override fun queryUserInfo(): HttpRequest {
+        return HttpRequests.httpGetRequest("$query_url?bql=select%20friends%20from%20user%20where%20telephone='${MyApp.instance().userName}'")
+                .headerField(applicationIdDesc, applicationId)
+                .headerField(rest_keyDesc, rest_key)
                 .connectTimeoutMs(timeout)
                 .readTimeoutMs(timeout)
                 .compile()

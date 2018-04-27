@@ -98,6 +98,7 @@ class LoginActivity : BaseActivity(), Updatable {
     override fun update() {
         //auto remember account
         CommonUtils.instance().saveAccountInfo(tel,password)
+        MyApp.instance().userName = tel
         //refresh push
         PushImp.instance().setPushAccount(this, tel)
         //start main page

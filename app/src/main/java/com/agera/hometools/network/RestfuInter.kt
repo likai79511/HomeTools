@@ -12,4 +12,6 @@ interface RestfuInter {
     fun login(name: String, password: String): HttpRequest
 
     fun sendMessage(msg: PushMessage): HttpRequest
+
+    fun queryUserInfo():HttpRequest
 }

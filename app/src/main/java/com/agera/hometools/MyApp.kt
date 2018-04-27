@@ -14,6 +14,8 @@ class MyApp: Application() {
         fun instance() = app!!
     }
 
+    var userName = "12345678901"
+
     override fun onCreate() {
         super.onCreate()
         app = this
